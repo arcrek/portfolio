@@ -13,9 +13,9 @@ const { currentRoute = "/" } = Astro.props;
 <header class="sticky top-0 z-50 w-full backdrop-blur-md bg-m3-surface/85 border-b border-m3-outline-variant/30 transition-colors duration-200">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
     <!-- Brand / Identity -->
-    <a href="/" class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-m3-primary rounded-m3-md p-1">
+    <a href={import.meta.env.BASE_URL} class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-m3-primary rounded-m3-md p-1">
       <div class="relative w-10 h-10 rounded-m3-full overflow-hidden border border-m3-outline-variant/50 shadow-xs group-hover:scale-105 transition-transform flex-shrink-0 bg-m3-surface-container">
-        <img src="/img.jpg" alt={PROFILE_INFO.name} class="w-full h-full object-cover" />
+        <img src={`${import.meta.env.BASE_URL}img.jpg`} alt={PROFILE_INFO.name} class="w-full h-full object-cover" />
       </div>
       <div class="hidden sm:block">
         <div class="text-sm font-bold text-m3-on-surface tracking-tight group-hover:text-m3-primary transition-colors">

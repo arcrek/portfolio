@@ -50,7 +50,7 @@ const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
             GitHub (@{PROFILE_INFO.handle})
           </M3Button>
 
-          <M3Button href="/lab" variant="outlined">
+          <M3Button href={`${import.meta.env.BASE_URL}lab`} variant="outlined">
             <span>Homelab & Journey</span>
             <svg slot="trailing-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -66,7 +66,7 @@ const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
           <div class="flex flex-col items-center text-center pb-4 mb-4 border-b border-m3-outline-variant/30">
             <div class="relative w-36 h-36 mb-3 group">
               <img
-                src="/img.jpg"
+                src={`${import.meta.env.BASE_URL}img.jpg`}
                 alt={PROFILE_INFO.name}
                 class="w-full h-full object-cover rounded-m3-xl shadow-md border-2 border-m3-outline-variant/40 group-hover:scale-[1.02] transition-transform duration-200"
               />
@@ -305,7 +305,7 @@ const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
 
               <div>
                 <a
-                  href="/lab"
+                  href={`${import.meta.env.BASE_URL}lab`}
                   class="text-xs font-medium text-m3-primary hover:underline inline-flex items-center gap-1"
                 >
                   <span>See homelab & journey</span>

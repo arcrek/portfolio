@@ -13,7 +13,7 @@ const isLab = currentRoute === "/lab" || currentRoute === "/services";
 <nav aria-label="Section selector" class={`inline-flex items-center p-1 bg-m3-surface-container-low border border-m3-outline-variant/60 rounded-m3-full shadow-xs ${className}`}>
   <!-- Projects & Builds Option -->
   <a
-    href="/"
+    href={import.meta.env.BASE_URL}
     class={`flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-l-m3-full rounded-r-m3-xs transition-all duration-200 select-none ${
       isProjects
         ? "bg-m3-secondary-container text-m3-on-secondary-container font-semibold shadow-xs"
@@ -36,7 +36,7 @@ const isLab = currentRoute === "/lab" || currentRoute === "/services";
 
   <!-- Homelab & Journey Option -->
   <a
-    href="/lab"
+    href={`${import.meta.env.BASE_URL}lab`}
     class={`flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-r-m3-full rounded-l-m3-xs transition-all duration-200 select-none ${
       isLab
         ? "bg-m3-secondary-container text-m3-on-secondary-container font-semibold shadow-xs"
