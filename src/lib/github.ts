@@ -12,65 +12,90 @@ export interface GitHubRepoMeta {
 }
 
 // Fallback baseline for offline builds or API rate-limited environments
+// ONLY public, verified, non-trivial repositories
 export const FALLBACK_REPOS: Record<string, GitHubRepoMeta> = {
   "arcrek/tmail": {
     name: "tmail",
     fullName: "arcrek/tmail",
     description: "A passwordless temporary-mail web app and API with automatic domain provisioning through Postfix and Stalwart JMAP",
-    stars: 12,
-    forks: 2,
+    stars: 2,
+    forks: 0,
     language: "Python",
     topics: ["email", "jmap", "postfix", "fastapi", "temporary-mail", "docker"],
     updatedAt: "2026-09-28T14:20:00Z",
     htmlUrl: "https://github.com/arcrek/tmail",
     defaultBranch: "main"
   },
-  "arcrek/google-automation-suite": {
-    name: "google-automation-suite",
-    fullName: "arcrek/google-automation-suite",
-    description: "Google Automation Suite: PSC Checker, Subscription Manager & Payments Profile Closer",
-    stars: 8,
-    forks: 1,
+  "arcrek/canva-automation": {
+    name: "canva-automation",
+    fullName: "arcrek/canva-automation",
+    description: "Unofficial, fail-closed Canva browser automation for account checks, team sync, invites, role updates, and member removal",
+    stars: 1,
+    forks: 0,
     language: "Python",
-    topics: ["automation", "google-cloud", "reverse-engineering", "playwright", "billing-lifecycle"],
+    topics: ["automation", "browser-automation", "python", "fail-closed", "account-management"],
     updatedAt: "2026-10-02T10:15:00Z",
-    htmlUrl: "https://github.com/arcrek/google-automation-suite",
+    htmlUrl: "https://github.com/arcrek/canva-automation",
     defaultBranch: "main"
   },
-  "arcrek/zoom-automation-suite": {
-    name: "zoom-automation-suite",
-    fullName: "arcrek/zoom-automation-suite",
-    description: "Enterprise Zoom Automation: Meeting Lifecycle, Attendee Tracking & Asset Distribution",
-    stars: 6,
+  "arcrek/TELEGRAM-ORDER-BOT": {
+    name: "TELEGRAM-ORDER-BOT",
+    fullName: "arcrek/TELEGRAM-ORDER-BOT",
+    description: "Self-hosted Telegram digital storefront bot — Docker Compose, PostgreSQL, PayOS payments, Vietnamese/English i18n",
+    stars: 1,
     forks: 0,
     language: "Python",
-    topics: ["zoom-api", "automation", "webhooks", "python", "video-processing"],
+    topics: ["telegram-bot", "ecommerce", "payos", "docker-compose", "postgresql", "i18n"],
     updatedAt: "2026-09-15T08:30:00Z",
-    htmlUrl: "https://github.com/arcrek/zoom-automation-suite",
+    htmlUrl: "https://github.com/arcrek/TELEGRAM-ORDER-BOT",
     defaultBranch: "main"
   },
-  "arcrek/renew-inapp": {
-    name: "renew-inapp",
-    fullName: "arcrek/renew-inapp",
-    description: "In-App Subscription Validation & Auto-Renewal Lifecycle Engine",
-    stars: 5,
+  "arcrek/outlook-graph-module": {
+    name: "outlook-graph-module",
+    fullName: "arcrek/outlook-graph-module",
+    description: "Headless Microsoft Outlook/Hotmail Graph API client (TypeScript + Python) — OAuth2, mail polling, multi-language OTP extraction",
+    stars: 1,
     forks: 0,
     language: "Python",
-    topics: ["in-app-purchases", "receipt-validation", "subscription-management", "fastapi"],
-    updatedAt: "2026-08-20T17:45:00Z",
-    htmlUrl: "https://github.com/arcrek/renew-inapp",
+    topics: ["microsoft-graph", "oauth2", "otp-extraction", "mail-polling", "headless"],
+    updatedAt: "2026-09-20T17:45:00Z",
+    htmlUrl: "https://github.com/arcrek/outlook-graph-module",
     defaultBranch: "main"
   },
-  "arcrek/ai-kit": {
-    name: "ai-kit",
-    fullName: "arcrek/ai-kit",
-    description: "Lightweight AI Agent Toolkit & Multi-Model Execution Framework",
-    stars: 9,
-    forks: 2,
+  "arcrek/VMS": {
+    name: "VMS",
+    fullName: "arcrek/VMS",
+    description: "Enterprise Visitor Management System (VMS) - Acme Corp Demo",
+    stars: 0,
+    forks: 0,
+    language: "JavaScript",
+    topics: ["visitor-management", "enterprise", "web-application"],
+    updatedAt: "2026-08-25T12:00:00Z",
+    htmlUrl: "https://github.com/arcrek/VMS",
+    defaultBranch: "main"
+  },
+  "arcrek/price_board": {
+    name: "price_board",
+    fullName: "arcrek/price_board",
+    description: "A simple, self-hosted board for product pricing",
+    stars: 0,
+    forks: 0,
     language: "TypeScript",
-    topics: ["ai-agents", "llm-tools", "typescript", "automation"],
-    updatedAt: "2026-09-25T12:00:00Z",
-    htmlUrl: "https://github.com/arcrek/ai-kit",
+    topics: ["pricing-board", "typescript", "self-hosted"],
+    updatedAt: "2026-09-01T09:00:00Z",
+    htmlUrl: "https://github.com/arcrek/price_board",
+    defaultBranch: "main"
+  },
+  "arcrek/xray-vless-ws-go": {
+    name: "xray-vless-ws-go",
+    fullName: "arcrek/xray-vless-ws-go",
+    description: "High-performance network routing proxy & secure tunnel daemon in Go",
+    stars: 0,
+    forks: 0,
+    language: "Go",
+    topics: ["go", "vless", "websocket", "networking", "proxy"],
+    updatedAt: "2026-08-10T11:00:00Z",
+    htmlUrl: "https://github.com/arcrek/xray-vless-ws-go",
     defaultBranch: "main"
   }
 };
@@ -110,6 +135,12 @@ export async function fetchGitHubRepo(repoSlug: string): Promise<GitHubRepoMeta>
     }
 
     const data = await res.json();
+
+    // If repo is private, do not expose or leak
+    if (data.private) {
+      return fallback;
+    }
+
     return {
       name: data.name ?? fallback.name,
       fullName: data.full_name ?? fallback.fullName,

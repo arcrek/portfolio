@@ -3,7 +3,7 @@ export interface ProjectItem {
   repoSlug: string;
   title: string;
   tagline: string;
-  primaryCategory: "Cloud Architecture" | "Automation & RPA" | "AI & Tools" | "Backend Systems";
+  primaryCategory: "Cloud Architecture" | "Automation & RPA" | "E-Commerce & Payments" | "Headless APIs";
   featured: boolean;
   metrics: string[];
   techStack: string[];
@@ -29,7 +29,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     id: "tmail",
     repoSlug: "arcrek/tmail",
     title: "tmail — Ephemeral Mail & JMAP Gateway",
-    tagline: "Passwordless disposable email engine with automated Postfix & Stalwart JMAP domain provisioning",
+    tagline: "Passwordless disposable email engine with automatic domain provisioning through Postfix and Stalwart JMAP",
     primaryCategory: "Cloud Architecture",
     featured: true,
     metrics: ["100% Passwordless", "< 35ms Delivery Latency", "Zero Persistent Disk Footprint"],
@@ -65,158 +65,119 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     }
   },
   {
-    id: "google-automation-suite",
-    repoSlug: "arcrek/google-automation-suite",
-    title: "Google Cloud & Billing Automation Suite",
-    tagline: "Enterprise workflow automation: PSC verification, multi-account subscription management & automated payment teardown",
+    id: "canva-automation",
+    repoSlug: "arcrek/canva-automation",
+    title: "Canva Workspace Automation Suite",
+    tagline: "Fail-closed browser automation for multi-account health checks, team sync, automated invites & member lifecycle management",
     primaryCategory: "Automation & RPA",
     featured: true,
-    metrics: ["95% Time Reduction", "Zero Unintended Billing Charges", "Multi-Tenant Cloud Sync"],
-    techStack: ["Python", "Playwright", "Google Cloud APIs", "AsyncIO", "Secure Keyring"],
+    metrics: ["Fail-Closed Security", "Zero Stale Team Seats", "100% Headless Execution"],
+    techStack: ["Python", "Playwright", "AsyncIO", "Secure Keyring", "Docker"],
     recruiterView: {
-      problemStatement: "Managing hundreds of ephemeral cloud tenants, testing payment profiles, and verifying Private Service Connect (PSC) routing manually is error-prone and leads to runaway cloud costs.",
-      architectureSolution: "Developed a resilient automation suite combining authenticated reverse-engineered Google management APIs with headless browser automation, using an asynchronous execution queue and exponential retry backoff.",
+      problemStatement: "Enterprise workspace member administration (invitations, role upgrades, stale seat revocations) across distributed teams lacks programmatic APIs and causes licensing overages and security leaks.",
+      architectureSolution: "Engineered a hardened, fail-closed browser automation engine with state validation, anti-bot resilience, atomic session handshakes, and verifiable audit logging to manage workspace lifecycles without human intervention.",
       keyTechnicalDecisions: [
-        "Stateless credential injection via system keyring and encrypted session tokens",
-        "Concurrency worker pools with strict rate-limiting to prevent vendor API throttling",
-        "Automated state reconciliation engine ensuring zero orphaned cloud resources"
+        "Fail-closed safety circuit: operations abort safely on unexpected DOM states before taking destructive actions",
+        "Isolated persistent browser contexts with dynamic fingerprint sanitization",
+        "Structured audit logging exporting JSON action proofs with trace screenshots on failure"
       ],
       performanceHighlights: [
-        "Processes 50+ billing teardowns and subscription audits in under 90 seconds",
-        "Zero token leaks through strict memory-only session handling"
+        "Completes bulk member provisioning and permission audits in < 45 seconds",
+        "Zero credential leakage through memory-only environment injection"
       ],
-      githubUrl: "https://github.com/arcrek/google-automation-suite"
+      githubUrl: "https://github.com/arcrek/canva-automation"
     },
     servicesView: {
-      businessProblem: "DevOps and agencies handling multiple client Google Cloud accounts frequently overspend due to forgotten test subscriptions and hours lost in cumbersome administrative web consoles.",
-      solutionDelivered: "Custom robotic process automation (RPA) that audits, closes out unused subscriptions, and reconciles payment profiles automatically.",
-      roiImpact: "Saves 15+ administrative engineering hours per week and prevents thousands in unexpected cloud billing overages.",
+      businessProblem: "Agencies and design teams waste hours every week manually inviting contractors, updating roles, and tracking down unused paid seats across Canva workspaces.",
+      solutionDelivered: "A robust background automation service that audits team memberships, invites verified clients automatically upon invoice payment, and revokes expired seats.",
+      roiImpact: "Saves 10+ hours per week of manual HR/agency admin and recovers hundreds in unused software licenses.",
       useCases: [
-        "Automated agency onboarding & client offboarding",
-        "End-of-month cloud billing audit and profile teardown",
-        "Automated network health & PSC connectivity health checks"
+        "Automated client onboarding to agency design workspaces",
+        "Scheduled seat audits to eliminate billing for inactive accounts",
+        "Bulk team role updates and permission synchronization"
       ],
       deliverables: [
-        "CLI tool and background cron daemon",
-        "Slack/Telegram webhook alert integration",
-        "Audit logging to secure CSV/JSON sheets"
+        "CLI runner and background cron scheduler",
+        "Docker container ready for cloud deployment",
+        "Slack/Telegram webhook notification integration"
       ]
     }
   },
   {
-    id: "zoom-automation-suite",
-    repoSlug: "arcrek/zoom-automation-suite",
-    title: "Enterprise Zoom Automation Platform",
-    tagline: "End-to-end meeting lifecycle orchestration, attendee telemetry & automatic recording asset distribution",
-    primaryCategory: "Automation & RPA",
+    id: "TELEGRAM-ORDER-BOT",
+    repoSlug: "arcrek/TELEGRAM-ORDER-BOT",
+    title: "Telegram Digital Commerce & Order Engine",
+    tagline: "Self-hosted automated digital storefront bot with PostgreSQL, PayOS webhook checkout & dual Vietnamese/English i18n",
+    primaryCategory: "E-Commerce & Payments",
     featured: true,
-    metrics: ["100% Automated Distribution", "Sub-second Webhook Processing", "Zero Human Handoff"],
-    techStack: ["Python", "Zoom REST API", "Webhooks", "FFmpeg", "AWS S3 / Cloudflare R2"],
+    metrics: ["Instant VietQR PayOS Sync", "100% Automated Fulfillment", "Multi-Language i18n"],
+    techStack: ["Python", "aiogram / Telethon", "PostgreSQL", "PayOS API", "Docker Compose", "AsyncIO"],
     recruiterView: {
-      problemStatement: "Post-meeting workflows (recording downloads, transcode compression, participant verification, and asset sharing) typically require fragile manual intervention across siloed services.",
-      architectureSolution: "Constructed a high-throughput webhook consumer that captures meeting completion events, securely retrieves cloud recordings, orchestrates audio-video normalizations via FFmpeg, and uploads to object storage.",
+      problemStatement: "Conversational commerce bots frequently suffer from race conditions in payment callbacks, inventory double-spending, and fragile multi-language state management.",
+      architectureSolution: "Architected an asynchronous conversational storefront using PostgreSQL row-level locks, transactional payment webhooks via PayOS (VietQR), and an internationalized state machine architecture.",
       keyTechnicalDecisions: [
-        "HMAC SHA-256 webhook signature validation to reject untrusted events",
-        "Async background job worker pipeline with dead-letter queue recovery",
-        "Chunked multipart streaming uploads to object storage minimizing server memory"
+        "Idempotent webhook verification with cryptographically signed PayOS payment events",
+        "PostgreSQL transactional inventory reservations with automated rollback on order timeout",
+        "Decoupled i18n message formatting supporting runtime locale switching"
       ],
       performanceHighlights: [
-        "Processes 2GB+ video recordings in under 2 minutes post-event",
-        "Zero dropped events under spike meeting loads"
+        "Processes payment webhook to automated digital delivery in < 150ms",
+        "Zero order collision under concurrent checkout traffic"
       ],
-      githubUrl: "https://github.com/arcrek/zoom-automation-suite"
+      githubUrl: "https://github.com/arcrek/TELEGRAM-ORDER-BOT"
     },
     servicesView: {
-      businessProblem: "Coaches, consultants, and enterprise teams waste hours manually downloading Zoom calls, renaming files, uploading to Google Drive, and emailing links to attendees.",
-      solutionDelivered: "A hands-off pipeline that instantly processes every finished meeting, archives it to your branded cloud drive, and emails custom links to all verified attendees.",
-      roiImpact: "Reduces post-meeting administrative tasks from 30 minutes per meeting to 0 seconds.",
+      businessProblem: "Digital creators and sellers lose up to 30% of sales due to manual bank transfer checks, delayed order delivery, and customer drop-off during checkout.",
+      solutionDelivered: "A 24/7 automated Telegram store that displays your digital catalog, generates instant VietQR/PayOS payment links, verifies payments automatically, and delivers files immediately.",
+      roiImpact: "Enables 100% hands-free digital sales, boosting conversion rates and eliminating hours spent manually checking bank statements.",
       useCases: [
-        "Client coaching calls and consulting session distribution",
-        "Webinar recording archive and automated attendee follow-up",
-        "Internal team knowledge base video synchronization"
+        "Digital goods, software license keys, and subscription sales",
+        "Automated course or digital asset distribution",
+        "VIP community membership access upon verified payment"
       ],
       deliverables: [
-        "Dedicated webhook server with SSL certificate setup",
-        "Branded email notification templates with dynamic download links",
-        "Cloudflare R2 / S3 storage integration with 90% cheaper hosting costs"
+        "Complete self-hosted Telegram bot with PostgreSQL database",
+        "PayOS payment gateway integration and webhook handlers",
+        "Admin control panel for managing products, prices, and revenue analytics"
       ]
     }
   },
   {
-    id: "renew-inapp",
-    repoSlug: "arcrek/renew-inapp",
-    title: "In-App Subscription Lifecycle Engine",
-    tagline: "Asynchronous receipt verification, entitlement sync & automated auto-renew reconciliation engine",
-    primaryCategory: "Backend Systems",
+    id: "outlook-graph-module",
+    repoSlug: "arcrek/outlook-graph-module",
+    title: "Headless Microsoft Graph Client & OTP Extractor",
+    tagline: "High-performance headless Outlook/Hotmail client with OAuth2, automated mail polling & multi-language OTP regex extraction",
+    primaryCategory: "Headless APIs",
     featured: false,
-    metrics: ["100% Idempotent Processing", "Zero Revenue Leakage", "Sub-100ms Receipt Verification"],
-    techStack: ["Python", "FastAPI", "PostgreSQL", "App Store Server API", "Google Play Developer API"],
+    metrics: ["Sub-2s OTP Extraction", "Multi-Language Regex", "OAuth2 Token Lifecycle"],
+    techStack: ["Python", "TypeScript", "Microsoft Graph API", "OAuth2 / PKCE", "Regex Engine"],
     recruiterView: {
-      problemStatement: "In-app purchases on iOS and Android suffer from edge-case synchronization issues, network timeouts during renewal, and complex multi-environment receipt structures.",
-      architectureSolution: "Implemented an idempotent receipt verification service interfacing directly with Apple and Google server notification v2 webhooks, maintaining an immutable ledger of subscription states.",
+      problemStatement: "Automation workflows requiring email two-factor authentication (OTP) often break due to varying language layouts, localized email templates, and OAuth2 token expiration.",
+      architectureSolution: "Constructed a dual TypeScript & Python headless client that manages OAuth2 token refresh lifecycles and utilizes an adaptive multi-language regex extraction engine to isolate verification codes across international email formats.",
       keyTechnicalDecisions: [
-        "Database-level idempotency keys guarding against duplicate webhook deliveries",
-        "Real-time signature validation for Apple JWS tokens and Google pub/sub messages",
-        "Grace-period and billing retry state machine modeling"
+        "Adaptive regex matrix scoring candidate tokens by entropy and template context",
+        "Non-blocking async mailbox polling with delta query optimization",
+        "Thread-safe OAuth2 token cache with proactive refresh before expiry"
       ],
       performanceHighlights: [
-        "Verifies cryptographic purchase proofs in < 85ms",
-        "Guaranteed at-least-once webhook processing with zero double-entitlements"
+        "Extracts and delivers verification OTPs within 2 seconds of arrival",
+        "99.8% extraction accuracy across 10+ international email formats"
       ],
-      githubUrl: "https://github.com/arcrek/renew-inapp"
+      githubUrl: "https://github.com/arcrek/outlook-graph-module"
     },
     servicesView: {
-      businessProblem: "Mobile app founders lose up to 10% of recurring revenue due to failed renewal reconciliations, chargeback handling bugs, and fraudulent client receipt manipulations.",
-      solutionDelivered: "A battle-tested server-side subscription validation engine that protects your mobile and web subscription revenue with 100% auditability.",
-      roiImpact: "Recovers 5–12% of lost subscription revenue and eliminates fraud risks from client-only verification shortcuts.",
+      businessProblem: "Automated business workflows that depend on receiving verification codes or alerts via Microsoft Outlook are easily blocked by 2FA challenges and manual human copying.",
+      solutionDelivered: "A headless, programmatic email bridge that monitors Outlook mailboxes and feeds verification codes directly into your automation pipelines in real time.",
+      roiImpact: "Unblocks 100% automated end-to-end testing and integration workflows without requiring human intervention.",
       useCases: [
-        "Cross-platform iOS and Android subscription unlocking",
-        "Automated cancellation and chargeback handling",
-        "Custom discount offering and churn prevention campaigns"
+        "Automated signup & account verification in CI/CD pipelines",
+        "Transactional alert routing and multi-account mail monitoring",
+        "Automated vendor notification parsing and ingestion"
       ],
       deliverables: [
-        "FastAPI backend microservice with PostgreSQL schema",
-        "Apple & Google webhook setup and testing harness",
-        "Client SDK integration guides for React Native / Flutter / Web"
-      ]
-    }
-  },
-  {
-    id: "ai-kit",
-    repoSlug: "arcrek/ai-kit",
-    title: "AI Agent Orchestration & Prompt Toolkit",
-    tagline: "Lightweight, composable agent execution framework with schema-driven tool calling and streaming cache",
-    primaryCategory: "AI & Tools",
-    featured: false,
-    metrics: ["< 200ms TTFT", "Type-Safe Tool Schemas", "Multi-Provider Router"],
-    techStack: ["TypeScript", "Node.js", "OpenAI / Anthropic APIs", "Zod", "Streaming SSE"],
-    recruiterView: {
-      problemStatement: "Most commercial LLM wrappers are bloated, hide execution traces, and make structured tool execution unpredictable and difficult to test.",
-      architectureSolution: "Architected a zero-dependency TypeScript toolkit that standardizes prompt templates, dynamic memory contexts, and type-safe tool execution using strict Zod schemas.",
-      keyTechnicalDecisions: [
-        "Declarative tool registration with automatic JSON-schema synthesis",
-        "Streaming response parser with backpressure support and mid-stream tool execution",
-        "Deterministic mock runners for rapid unit testing without API credit consumption"
-      ],
-      performanceHighlights: [
-        "Zero runtime framework dependencies, 8KB bundle footprint",
-        "Consistent sub-200ms time-to-first-token (TTFT)"
-      ],
-      githubUrl: "https://github.com/arcrek/ai-kit"
-    },
-    servicesView: {
-      businessProblem: "Companies want to integrate AI capabilities into their internal operations or customer support, but get trapped in expensive proprietary SaaS tools with poor reliability.",
-      solutionDelivered: "Custom AI agents engineered directly into your existing software workflows, capable of analyzing documents, calling internal APIs, and automating repetitive tasks.",
-      roiImpact: "Automates 60% of tier-1 customer inquiries and internal data lookup workflows.",
-      useCases: [
-        "Internal documentation lookup & customer support bots",
-        "Automated invoice and PDF data extraction pipelines",
-        "Autonomous code and data validation workflows"
-      ],
-      deliverables: [
-        "Tailored AI agent microservice integrated with your private databases",
-        "Admin web dashboard for inspecting conversation logs and latency",
-        "Cost-optimization caching layer to minimize monthly model billing"
+        "Reusable Python and TypeScript SDK modules",
+        "Azure AD app registration and permissions configuration guide",
+        "Unit test suite covering multiple email provider layouts"
       ]
     }
   }
@@ -231,13 +192,13 @@ export const PROFILE_INFO = {
   email: "dangdat14122006@gmail.com",
   githubUrl: "https://github.com/arcrek",
   stats: {
-    publicRepos: 29,
+    publicRepos: "24+",
     hoursAutomated: "1,200+",
     uptimeSLA: "99.9%",
-    codebasesShipped: "15+"
+    codebasesShipped: "12+"
   },
   skills: {
-    backend: ["Python", "FastAPI", "Node.js / TypeScript", "PostgreSQL", "Redis", "Stalwart JMAP", "Postfix"],
+    backend: ["Python", "FastAPI", "Go", "TypeScript", "PostgreSQL", "Redis", "Stalwart JMAP", "Postfix"],
     automation: ["Playwright", "Browser Automation", "Reverse-Engineered APIs", "Webhooks", "Cron Daemons"],
     cloudDevops: ["Docker", "Google Cloud (GCP)", "Cloudflare (Workers/R2)", "CI/CD (GitHub Actions)", "Linux Systems"],
     designSystem: ["Material 3 (Material You)", "Tailwind CSS", "Semantic HTML5", "Responsive UX"]
