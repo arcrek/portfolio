@@ -13,7 +13,7 @@ A high-performance developer portfolio built with **Astro 5**, **Tailwind CSS v4
   - Material 3 Segmented Buttons, Cards (Elevated & Outlined), and Assist Chips.
   - Dark / Light mode toggle with zero-FOUC initialization and local storage sync.
 - **Build-Time GitHub Hydration**:
-  - Live star counts, languages, and repo links are fetched at build-time using GitHub's API (`src/lib/github.ts`).
+  - Languages, repository topics, and source links are fetched at build-time using GitHub's API (`src/lib/github.ts`).
   - Resilient offline fallback guarantees the site builds reliably in any environment without runtime rate-limit errors.
 - **Near-Zero Client JavaScript**:
   - 100/100 Lighthouse performance baseline with instant First Contentful Paint.
@@ -73,4 +73,4 @@ npm run preview
 
 ## Adding or Updating Projects
 
-To add or update featured projects, edit [`src/data/projects.ts`](file:///home/arcrek/workspace/portfolio/src/data/projects.ts). Each project accepts both `recruiterView` (problem, architecture, key decisions) and `servicesView` (business problem, ROI impact, deliverables). Live stats will automatically synchronize on the next build!
+To add or update featured projects, edit [`src/data/projects.ts`](file:///home/arcrek/workspace/portfolio/src/data/projects.ts). Each project accepts both `recruiterView` (problem, architecture, key decisions) and `servicesView` (business problem, ROI impact, deliverables). Repository metadata will automatically synchronize on the next build!

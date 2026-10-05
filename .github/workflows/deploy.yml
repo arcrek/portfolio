@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-    # Rebuild every Monday at 00:00 UTC to automatically refresh live GitHub stars & stats
+    # Rebuild every Monday at 00:00 UTC to automatically refresh repository metadata & languages
     - cron: '0 0 * * 1'
   workflow_dispatch:
 
