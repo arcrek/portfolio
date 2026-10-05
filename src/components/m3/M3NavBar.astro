@@ -4,7 +4,7 @@ import M3SegmentedButton from "./M3SegmentedButton.astro";
 import { PROFILE_INFO } from "../../data/projects";
 
 interface Props {
-  currentRoute?: "/" | "/services";
+  currentRoute?: "/" | "/lab" | "/services";
 }
 
 const { currentRoute = "/" } = Astro.props;
@@ -17,7 +17,7 @@ const { currentRoute = "/" } = Astro.props;
       <div class="relative w-10 h-10 rounded-m3-full bg-m3-primary-container text-m3-on-primary-container flex items-center justify-center font-bold text-base shadow-xs group-hover:scale-105 transition-transform">
         <span>ND</span>
         <!-- Online pulse indicator -->
-        <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-m3-surface rounded-full" title="Available for opportunities"></span>
+        <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-m3-surface rounded-full" title="ICT Student / Builder"></span>
       </div>
       <div class="hidden sm:block">
         <div class="text-sm font-bold text-m3-on-surface tracking-tight group-hover:text-m3-primary transition-colors">
@@ -26,7 +26,7 @@ const { currentRoute = "/" } = Astro.props;
         <div class="text-xs text-m3-on-surface-variant flex items-center gap-1.5 font-mono">
           <span>@{PROFILE_INFO.handle}</span>
           <span class="w-1 h-1 rounded-full bg-m3-outline-variant"></span>
-          <span class="text-emerald-600 dark:text-emerald-400 font-sans font-medium">Open to roles & projects</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-sans font-medium">ICT Student / Builder</span>
         </div>
       </div>
     </a>

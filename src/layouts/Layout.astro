@@ -6,7 +6,7 @@ import { PROFILE_INFO } from "../data/projects";
 interface Props {
   title?: string;
   description?: string;
-  currentRoute?: "/" | "/services";
+  currentRoute?: "/" | "/lab" | "/services";
 }
 
 const {
@@ -83,10 +83,11 @@ const {
 
           <!-- Quick Navigation links -->
           <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <a href="/" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Recruiter View</a>
-            <a href="/services" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Client Services</a>
-            <a href={PROFILE_INFO.githubUrl} target="_blank" rel="noopener noreferrer" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">GitHub Profile</a>
-            <a href={`mailto:${PROFILE_INFO.email}`} class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Get in Touch</a>
+            <a href="/" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Projects & Builds</a>
+            <a href="/lab" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Homelab & Stack</a>
+            <a href={PROFILE_INFO.githubUrl} target="_blank" rel="noopener noreferrer" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">GitHub (@{PROFILE_INFO.handle})</a>
+            <a href={PROFILE_INFO.facebookUrl} target="_blank" rel="noopener noreferrer" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Facebook</a>
+            <a href={`mailto:${PROFILE_INFO.email}`} class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Email</a>
           </div>
         </div>
 

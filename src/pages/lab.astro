@@ -1,0 +1,212 @@
+---
+import Layout from "../layouts/Layout.astro";
+import M3Card from "../components/m3/M3Card.astro";
+import M3Button from "../components/m3/M3Button.astro";
+import M3Chip from "../components/m3/M3Chip.astro";
+import { PROFILE_INFO } from "../data/projects";
+---
+
+<Layout
+  currentRoute="/lab"
+  title={`Homelab & How I Build — ${PROFILE_INFO.name}`}
+  description="Homelab setup, self-hosting stack, and how late-night ideas turn into production code."
+>
+  <!-- Hero Section (ICT Student / Homelab Builder Voice) -->
+  <section class="py-6 sm:py-10">
+    <div class="max-w-3xl space-y-4">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-m3-full bg-m3-surface-container-low border border-m3-outline-variant/50 text-xs font-mono text-m3-on-surface-variant shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Homelab & Engineering Notes</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-m3-on-surface leading-tight">
+        Turning late-night ideas into things that somehow run in production.
+      </h1>
+
+      <p class="text-lg text-m3-on-surface-variant leading-relaxed">
+        I am an ICT student from Vietnam who loves self-hosting, reverse engineering protocols, and building backend tools. When I'm not writing Python or Go, I'm probably breaking and fixing containers in my homelab.
+      </p>
+
+      <!-- The Quote -->
+      <div class="p-4 rounded-m3-md bg-m3-surface-container-low border-l-4 border-m3-primary text-sm italic text-m3-on-surface-variant font-mono">
+        "Works on my machine." — me, always
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <M3Button href="#homelab-setup" variant="filled">
+          <svg slot="leading-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
+          </svg>
+          Homelab Infrastructure
+        </M3Button>
+
+        <M3Button href="#how-it-goes" variant="tonal">
+          <span>How It Usually Goes</span>
+        </M3Button>
+
+        <M3Button href="/" variant="outlined">
+          <svg slot="leading-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>View Shipped Projects</span>
+        </M3Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Usually Goes (The 4-Step Student Builder Cycle) -->
+  <section id="how-it-goes" class="py-10 border-t border-m3-outline-variant/20">
+    <div class="mb-6">
+      <div class="text-xs font-bold uppercase tracking-wider text-m3-primary mb-1">
+        Development Workflow
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-m3-on-surface">
+        How it usually goes
+      </h2>
+      <p class="text-sm text-m3-on-surface-variant mt-1">
+        The typical lifecycle of my side projects and homelab experiments.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {PROFILE_INFO.workflow.map((item) => (
+        <M3Card variant="elevated" padding="md" rounded="lg" class="border border-m3-outline-variant/40 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-8 h-8 rounded-m3-full bg-m3-primary-container text-m3-on-primary-container font-mono font-bold text-sm flex items-center justify-center">
+              {item.step}
+            </div>
+            <p class="text-sm font-semibold text-m3-on-surface leading-snug">
+              {item.title}
+            </p>
+          </div>
+        </M3Card>
+      ))}
+    </div>
+
+    <div class="mt-4 text-xs font-mono text-m3-on-surface-variant">
+      The robots haven't unionized yet. Fingers crossed.
+    </div>
+  </section>
+
+  <!-- The Homelab Setup -->
+  <section id="homelab-setup" class="py-10 border-t border-m3-outline-variant/20">
+    <div class="mb-6">
+      <div class="text-xs font-bold uppercase tracking-wider text-m3-tertiary mb-1">
+        Self-Hosting & Bare Metal
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-m3-on-surface">
+        The Homelab Setup
+      </h2>
+      <p class="text-sm text-m3-on-surface-variant mt-1 max-w-2xl">
+        Running a private cluster on Proxmox, TrueNAS, and Docker. Because paying for Netflix while self-hosting a media server is a cry for help.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {PROFILE_INFO.homelabStack.map((item) => (
+        <M3Card variant="outlined" padding="md" rounded="lg" class="border border-m3-outline-variant/40 hover:border-m3-primary/50 transition-colors">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-m3-primary"></span>
+            <h3 class="text-sm font-bold text-m3-on-surface font-mono">
+              {item.name}
+            </h3>
+          </div>
+          <p class="text-xs text-m3-on-surface-variant leading-relaxed">
+            {item.desc}
+          </p>
+        </M3Card>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tools I Reach For -->
+  <section class="py-10 border-t border-m3-outline-variant/20">
+    <div class="mb-6">
+      <div class="text-xs font-bold uppercase tracking-wider text-m3-secondary mb-1">
+        Stack & Technologies
+      </div>
+      <h2 class="text-2xl font-bold text-m3-on-surface">
+        Tools I reach for
+      </h2>
+      <p class="text-sm text-m3-on-surface-variant mt-1">
+        Languages, frameworks, and infrastructure tools I use to turn ideas into running code.
+      </p>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Languages -->
+      <div>
+        <div class="text-xs font-semibold text-m3-on-surface-variant uppercase tracking-wider mb-2 font-mono">
+          Languages
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {PROFILE_INFO.skills.languages.map((tool) => (
+            <span class="text-xs px-3 py-1 rounded-m3-sm bg-m3-surface-container-high text-m3-on-surface font-mono font-medium border border-m3-outline-variant/30">
+              {tool}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Frameworks -->
+      <div>
+        <div class="text-xs font-semibold text-m3-on-surface-variant uppercase tracking-wider mb-2 font-mono">
+          Frameworks & Libraries
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {PROFILE_INFO.skills.frameworks.map((tool) => (
+            <span class="text-xs px-3 py-1 rounded-m3-sm bg-m3-surface-container-high text-m3-on-surface font-mono font-medium border border-m3-outline-variant/30">
+              {tool}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Infrastructure -->
+      <div>
+        <div class="text-xs font-semibold text-m3-on-surface-variant uppercase tracking-wider mb-2 font-mono">
+          Infrastructure, Databases & DevOps
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {PROFILE_INFO.skills.infrastructure.map((tool) => (
+            <span class="text-xs px-3 py-1 rounded-m3-sm bg-m3-surface-container-high text-m3-on-surface font-mono font-medium border border-m3-outline-variant/30">
+              {tool}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect Card -->
+  <section class="my-10 border-t border-m3-outline-variant/20 pt-8">
+    <M3Card variant="filled" padding="lg" rounded="xl" class="bg-m3-surface-container text-m3-on-surface border border-m3-outline-variant/30">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-xl">
+          <div class="text-xs font-bold uppercase tracking-wider text-m3-primary font-mono">
+            Get in touch
+          </div>
+          <h3 class="text-2xl font-bold">
+            Want to talk about code, self-hosting, or opportunities?
+          </h3>
+          <p class="text-sm text-m3-on-surface-variant leading-relaxed">
+            I am always open to interesting engineering conversations, tech discussions, or software opportunities. Drop me an email or reach out on GitHub.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <M3Button href={`mailto:${PROFILE_INFO.email}`} variant="filled">
+            <svg slot="leading-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Send Email
+          </M3Button>
+
+          <M3Button href={PROFILE_INFO.facebookUrl} target="_blank" variant="outlined">
+            Facebook
+          </M3Button>
+        </div>
+      </div>
+    </M3Card>
+  </section>
+</Layout>
