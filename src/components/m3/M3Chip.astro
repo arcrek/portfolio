@@ -1,0 +1,39 @@
+---
+interface Props {
+  variant?: "assist" | "filter" | "suggestion" | "elevated";
+  selected?: boolean;
+  href?: string;
+  class?: string;
+}
+
+const {
+  variant = "assist",
+  selected = false,
+  href,
+  class: className = ""
+} = Astro.props;
+
+const baseStyles = "inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-m3-sm transition-all duration-150 select-none m3-state-layer";
+
+const styleByState = selected
+  ? "bg-m3-secondary-container text-m3-on-secondary-container border border-m3-secondary-container shadow-xs"
+  : "bg-m3-surface-container-low text-m3-on-surface-variant border border-m3-outline-variant hover:bg-m3-surface-container hover:text-m3-on-surface";
+
+const classes = `${baseStyles} ${styleByState} ${className}`;
+---
+
+{
+  href ? (
+    <a href={href} class={classes}>
+      <slot name="leading-icon" />
+      <slot />
+      <slot name="trailing-icon" />
+    </a>
+  ) : (
+    <span class={classes}>
+      <slot name="leading-icon" />
+      <slot />
+      <slot name="trailing-icon" />
+    </span>
+  )
+}

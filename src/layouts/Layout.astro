@@ -1,0 +1,108 @@
+---
+import "../styles/global.css";
+import M3NavBar from "../components/m3/M3NavBar.astro";
+import { PROFILE_INFO } from "../data/projects";
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentRoute?: "/" | "/services";
+}
+
+const {
+  title = `${PROFILE_INFO.name} (@${PROFILE_INFO.handle}) — ${PROFILE_INFO.title}`,
+  description = PROFILE_INFO.tagline,
+  currentRoute = "/"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={PROFILE_INFO.name} />
+    <meta name="theme-color" content="#0061a4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={`${PROFILE_INFO.name} Portfolio`} />
+
+    <!-- Google Fonts Preconnect & Plus Jakarta Sans + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Zero-FOUC Instant Theme Initializer -->
+    <script is:inline>
+      (function () {
+        const storedTheme = localStorage.getItem("m3-theme");
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (storedTheme === "dark" || (!storedTheme && systemDark)) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-m3-surface text-m3-on-surface flex flex-col min-h-screen selection:bg-m3-primary-container selection:text-m3-on-primary-container">
+    <M3NavBar currentRoute={currentRoute} />
+
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <slot />
+    </main>
+
+    <!-- Material 3 Footer -->
+    <footer class="mt-auto border-t border-m3-outline-variant/30 bg-m3-surface-container-low py-12 transition-colors">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="text-center md:text-left">
+            <div class="flex items-center justify-center md:justify-start gap-2 text-base font-bold text-m3-on-surface">
+              <span>{PROFILE_INFO.name}</span>
+              <span class="text-xs px-2 py-0.5 rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container font-mono">
+                @{PROFILE_INFO.handle}
+              </span>
+            </div>
+            <p class="text-xs text-m3-on-surface-variant mt-1 max-w-md">
+              {PROFILE_INFO.tagline}
+            </p>
+          </div>
+
+          <!-- Quick Navigation links -->
+          <div class="flex flex-wrap items-center justify-center gap-6 text-sm">
+            <a href="/" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Recruiter View</a>
+            <a href="/services" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Client Services</a>
+            <a href={PROFILE_INFO.githubUrl} target="_blank" rel="noopener noreferrer" class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">GitHub Profile</a>
+            <a href={`mailto:${PROFILE_INFO.email}`} class="text-m3-on-surface-variant hover:text-m3-primary transition-colors">Get in Touch</a>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-m3-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-m3-on-surface-variant">
+          <div>
+            &copy; {new Date().getFullYear()} {PROFILE_INFO.name}. All rights reserved.
+          </div>
+          <div class="flex items-center gap-2">
+            <span>Crafted with</span>
+            <span class="inline-flex items-center gap-1 font-semibold text-m3-primary">
+              <span class="w-2 h-2 rounded-full bg-m3-primary animate-pulse"></span>
+              Astro + Material 3 Design
+            </span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

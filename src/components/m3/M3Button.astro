@@ -1,0 +1,66 @@
+---
+interface Props {
+  variant?: "filled" | "tonal" | "outlined" | "text" | "elevated";
+  href?: string;
+  target?: string;
+  rel?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+  id?: string;
+  ariaLabel?: string;
+  download?: boolean | string;
+}
+
+const {
+  variant = "filled",
+  href,
+  target,
+  rel,
+  type = "button",
+  class: className = "",
+  id,
+  ariaLabel,
+  download
+} = Astro.props;
+
+const baseStyles = "inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer select-none rounded-m3-full m3-state-layer focus:outline-none focus-visible:ring-2 focus-visible:ring-m3-primary";
+
+const variantStyles = {
+  filled: "bg-m3-primary text-m3-on-primary hover:shadow-md active:shadow-sm",
+  tonal: "bg-m3-secondary-container text-m3-on-secondary-container hover:shadow-sm",
+  elevated: "bg-m3-surface-container-low text-m3-primary shadow-sm hover:shadow-md active:shadow-none border border-m3-outline-variant/30",
+  outlined: "border border-m3-outline text-m3-primary hover:bg-m3-primary/5 active:bg-m3-primary/10",
+  text: "text-m3-primary hover:bg-m3-primary/8 active:bg-m3-primary/12 px-4"
+};
+
+const classes = `${baseStyles} ${variantStyles[variant]} ${className}`;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      target={target}
+      rel={target === "_blank" ? (rel || "noopener noreferrer") : rel}
+      class={classes}
+      id={id}
+      aria-label={ariaLabel}
+      download={download}
+    >
+      <slot name="leading-icon" />
+      <slot />
+      <slot name="trailing-icon" />
+    </a>
+  ) : (
+    <button
+      type={type}
+      class={classes}
+      id={id}
+      aria-label={ariaLabel}
+    >
+      <slot name="leading-icon" />
+      <slot />
+      <slot name="trailing-icon" />
+    </button>
+  )
+}

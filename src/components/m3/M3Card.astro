@@ -1,0 +1,43 @@
+---
+interface Props {
+  variant?: "elevated" | "filled" | "outlined";
+  class?: string;
+  padding?: "none" | "sm" | "md" | "lg";
+  rounded?: "sm" | "md" | "lg" | "xl";
+  id?: string;
+}
+
+const {
+  variant = "elevated",
+  class: className = "",
+  padding = "md",
+  rounded = "xl",
+  id
+} = Astro.props;
+
+const paddingStyles = {
+  none: "p-0",
+  sm: "p-4",
+  md: "p-6",
+  lg: "p-8"
+};
+
+const roundedStyles = {
+  sm: "rounded-m3-sm",
+  md: "rounded-m3-md",
+  lg: "rounded-m3-lg",
+  xl: "rounded-m3-xl"
+};
+
+const variantStyles = {
+  elevated: "bg-m3-surface-container-low text-m3-on-surface shadow-sm hover:shadow-md transition-shadow duration-200 border border-m3-outline-variant/40",
+  filled: "bg-m3-surface-container-highest text-m3-on-surface border-none",
+  outlined: "bg-m3-surface text-m3-on-surface border border-m3-outline-variant hover:border-m3-outline transition-colors duration-200"
+};
+
+const classes = `relative overflow-hidden transition-all duration-200 ${roundedStyles[rounded]} ${variantStyles[variant]} ${paddingStyles[padding]} ${className}`;
+---
+
+<div class={classes} id={id}>
+  <slot />
+</div>
