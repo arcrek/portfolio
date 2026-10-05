@@ -59,33 +59,50 @@ const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
         </div>
       </div>
 
-      <!-- Quick Student & Builder Profile Card -->
+      <!-- Profile Picture & Builder Card -->
       <div class="w-full md:w-80 flex-shrink-0">
-        <M3Card variant="elevated" padding="md" rounded="xl" class="border border-m3-outline-variant/30">
-          <div class="text-xs font-semibold uppercase tracking-wider text-m3-primary mb-4 flex items-center justify-between font-mono">
+        <M3Card variant="elevated" padding="md" rounded="xl" class="border border-m3-outline-variant/30 shadow-md">
+          <!-- Profile Picture Section -->
+          <div class="flex flex-col items-center text-center pb-4 mb-4 border-b border-m3-outline-variant/30">
+            <div class="relative w-36 h-36 mb-3 group">
+              <img
+                src="/img.jpg"
+                alt={PROFILE_INFO.name}
+                class="w-full h-full object-cover rounded-m3-xl shadow-md border-2 border-m3-outline-variant/40 group-hover:scale-[1.02] transition-transform duration-200"
+              />
+              <span class="absolute -bottom-1 -right-1 px-2.5 py-0.5 rounded-m3-full bg-emerald-500 text-white text-[10px] font-mono font-bold tracking-wider shadow-xs flex items-center gap-1 border-2 border-m3-surface">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                ONLINE
+              </span>
+            </div>
+            <div class="font-bold text-lg text-m3-on-surface">{PROFILE_INFO.name}</div>
+            <div class="text-xs text-m3-primary font-mono font-medium">@{PROFILE_INFO.handle} &bull; {PROFILE_INFO.location}</div>
+          </div>
+
+          <div class="text-xs font-semibold uppercase tracking-wider text-m3-primary mb-3 flex items-center justify-between font-mono">
             <span>Builder Telemetry</span>
             <span class="w-2 h-2 rounded-full bg-m3-primary"></span>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div class="p-3 rounded-m3-lg bg-m3-surface-container">
-              <div class="text-2xl font-extrabold text-m3-on-surface font-mono">{PROFILE_INFO.stats.publicRepos}</div>
-              <div class="text-xs text-m3-on-surface-variant mt-0.5">Public Repos</div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
+              <div class="text-xl font-extrabold text-m3-on-surface font-mono">{PROFILE_INFO.stats.publicRepos}</div>
+              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Public Repos</div>
             </div>
 
-            <div class="p-3 rounded-m3-lg bg-m3-surface-container">
-              <div class="text-2xl font-extrabold text-m3-primary font-mono">{PROFILE_INFO.stats.homelabContainers}</div>
-              <div class="text-xs text-m3-on-surface-variant mt-0.5">Homelab Containers</div>
+            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
+              <div class="text-xl font-extrabold text-m3-primary font-mono">{PROFILE_INFO.stats.homelabContainers}</div>
+              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Homelab Containers</div>
             </div>
 
-            <div class="p-3 rounded-m3-lg bg-m3-surface-container">
-              <div class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">ICT</div>
-              <div class="text-xs text-m3-on-surface-variant mt-0.5">Student Focus</div>
+            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
+              <div class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">ICT</div>
+              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Student Focus</div>
             </div>
 
-            <div class="p-3 rounded-m3-lg bg-m3-surface-container">
-              <div class="text-2xl font-extrabold text-m3-tertiary font-mono">VN</div>
-              <div class="text-xs text-m3-on-surface-variant mt-0.5">{PROFILE_INFO.location}</div>
+            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
+              <div class="text-xl font-extrabold text-m3-tertiary font-mono">VN</div>
+              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Vietnam</div>
             </div>
           </div>
 
