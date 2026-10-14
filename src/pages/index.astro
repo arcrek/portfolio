@@ -1,436 +1,289 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import M3Card from "../components/m3/M3Card.astro";
-import M3Button from "../components/m3/M3Button.astro";
-import M3Chip from "../components/m3/M3Chip.astro";
+import FlagshipCard from "../components/editorial/FlagshipCard.astro";
+import ProjectRow from "../components/editorial/ProjectRow.astro";
 import { CURATED_PROJECTS, PROFILE_INFO } from "../data/projects";
 import { fetchAllCuratedRepos } from "../lib/github";
 
 // Build-time GitHub data hydration
 const repoSlugs = CURATED_PROJECTS.map((p) => p.repoSlug);
 const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
+
+const flagshipProjects = CURATED_PROJECTS.filter((p) => p.tier === "flagship");
+const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
 ---
 
 <Layout currentRoute="/">
-  <!-- Hero Section (ICT Student / Builder Voice) -->
-  <section class="py-6 sm:py-10">
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-      <div class="space-y-4 max-w-2xl">
-        <!-- Status Pill -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-m3-full bg-m3-surface-container-low border border-m3-outline-variant/50 text-xs font-mono text-m3-on-surface-variant shadow-2xs">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>ICT Student from Vietnam</span>
+  <!-- 01 // EDITORIAL MASTHEAD & INTEGRATED STACK STRIP -->
+  <section aria-labelledby="masthead-heading" class="mb-12">
+    <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface">
+      <!-- Top Row: Identity & Profile Telemetry -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-ed-border">
+        <!-- Main Narrative (8 cols) -->
+        <div class="lg:col-span-8 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-xs text-ed-text-secondary">
+              <span class="w-2 h-2 rounded-full bg-ed-status animate-pulse"></span>
+              <span>01 // IDENTITY</span>
+              <span class="text-ed-border-strong">&bull;</span>
+              <span>{PROFILE_INFO.stats.status}</span>
+            </div>
+
+            <h1
+              id="masthead-heading"
+              class="text-3xl sm:text-5xl font-extrabold tracking-tight text-ed-text leading-[1.1]"
+            >
+              {PROFILE_INFO.name}
+              <span class="block sm:inline font-mono text-xl sm:text-3xl font-semibold text-ed-accent sm:ml-2">
+                @{PROFILE_INFO.handle}
+              </span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-ed-text-secondary leading-relaxed max-w-2xl">
+              {PROFILE_INFO.tagline} If a workflow can be containerized, piped over sockets, or scripted headless, I have probably stayed up until 3 a.m. making it run in production.
+            </p>
+          </div>
+
+          <!-- Primary Actions -->
+          <div class="flex flex-wrap items-center gap-2.5 pt-2">
+            <a
+              href="#flagship-systems"
+              class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 bg-ed-text text-ed-bg font-mono text-xs font-semibold hover:opacity-90"
+            >
+              <span>Inspect Flagship Systems</span>
+              <span>↓</span>
+            </a>
+
+            <a
+              href="#engineering-index"
+              class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
+            >
+              <span>All Projects ({CURATED_PROJECTS.length})</span>
+            </a>
+
+            <a
+              href={PROFILE_INFO.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle hover:border-ed-border-strong font-mono text-xs"
+            >
+              <span>GitHub ({PROFILE_INFO.stats.publicRepos} repos)</span>
+              <span>↗</span>
+            </a>
+
+            <a
+              href={`mailto:${PROFILE_INFO.email}`}
+              class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle hover:border-ed-border-strong font-mono text-xs"
+            >
+              <span>{PROFILE_INFO.email}</span>
+            </a>
+          </div>
         </div>
 
-        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-m3-on-surface leading-tight">
-          hey, i'm <span class="text-m3-primary">{PROFILE_INFO.handle}</span>.
-        </h1>
-
-        <p class="text-lg sm:text-xl text-m3-on-surface-variant font-medium leading-relaxed">
-          {PROFILE_INFO.name} — {PROFILE_INFO.title}
-        </p>
-
-        <p class="text-sm sm:text-base text-m3-on-surface-variant/90 leading-relaxed">
-          {PROFILE_INFO.tagline} I build self-hosted backends, network proxies, and browser automations. If it can be containerized or scripted, I've probably stayed up until 3 a.m. trying to make it run.
-        </p>
-
-        <!-- CTA Action Row -->
-        <div class="flex flex-wrap items-center gap-3 pt-2">
-          <M3Button href="#shipped-projects" variant="filled">
-            <svg slot="leading-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-            Things I've Built
-          </M3Button>
-
-          <M3Button href={PROFILE_INFO.githubUrl} target="_blank" variant="tonal">
-            <svg slot="leading-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-            </svg>
-            GitHub (@{PROFILE_INFO.handle})
-          </M3Button>
-
-          <M3Button href={`${import.meta.env.BASE_URL}lab`} variant="outlined">
-            <span>Homelab & Journey</span>
-            <svg slot="trailing-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </M3Button>
-        </div>
-      </div>
-
-      <!-- Profile Picture & Builder Card -->
-      <div class="w-full md:w-80 flex-shrink-0">
-        <M3Card variant="elevated" padding="md" rounded="xl" class="border border-m3-outline-variant/30 shadow-md">
-          <!-- Profile Picture Section -->
-          <div class="flex flex-col items-center text-center pb-4 mb-4 border-b border-m3-outline-variant/30">
-            <div class="relative w-36 h-36 mb-3 group">
+        <!-- Profile Column (4 cols) -->
+        <div class="lg:col-span-4 p-6 bg-ed-surface-subtle/40 flex flex-col justify-between gap-5">
+          <div class="flex items-center gap-4">
+            <div class="relative w-20 h-20 rounded-2xl border border-ed-border-strong bg-ed-surface shrink-0 overflow-hidden">
               <img
                 src={`${import.meta.env.BASE_URL}img.jpg`}
                 alt={PROFILE_INFO.name}
-                class="w-full h-full object-cover rounded-m3-xl shadow-md border-2 border-m3-outline-variant/40 group-hover:scale-[1.02] transition-transform duration-200"
+                width="80"
+                height="80"
+                decoding="async"
+                fetchpriority="high"
+                class="w-full h-full object-cover"
               />
-              <span class="absolute -bottom-1 -right-1 px-2.5 py-0.5 rounded-m3-full bg-emerald-500 text-white text-[10px] font-mono font-bold tracking-wider shadow-xs flex items-center gap-1 border-2 border-m3-surface">
-                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                ONLINE
+            </div>
+            <div class="space-y-1 min-w-0">
+              <div class="font-mono text-xs font-bold uppercase tracking-wider text-ed-accent">
+                Builder Telemetry
+              </div>
+              <div class="font-bold text-sm text-ed-text truncate">
+                {PROFILE_INFO.title}
+              </div>
+              <div class="font-mono text-xs text-ed-text-muted">
+                Based in {PROFILE_INFO.location}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 rounded-2xl overflow-hidden border border-ed-border bg-ed-surface divide-x divide-ed-border">
+            <div class="p-3">
+              <div class="font-mono text-lg font-extrabold text-ed-text">
+                {PROFILE_INFO.stats.publicRepos}
+              </div>
+              <div class="font-mono text-[10px] uppercase tracking-wider text-ed-text-muted">
+                Public Repos
+              </div>
+            </div>
+            <div class="p-3">
+              <div class="font-mono text-lg font-extrabold text-ed-accent">
+                Backend
+              </div>
+              <div class="font-mono text-[10px] uppercase tracking-wider text-ed-text-muted">
+                Primary Focus
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-ed-border flex items-center justify-between font-mono text-[11px] text-ed-text-muted">
+            <span>"{PROFILE_INFO.stats.motto}"</span>
+            <span class="text-ed-status font-semibold">● ONLINE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Integrated Technical Stack Strip -->
+      <div class="border-t border-ed-border grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-ed-border bg-ed-surface">
+        <div class="p-4 sm:px-6 space-y-2">
+          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
+            Languages
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            {PROFILE_INFO.skills.languages.map((lang) => (
+              <span class="rounded-lg font-mono text-xs px-2.5 py-0.5 border border-ed-border bg-ed-surface-subtle text-ed-text">
+                {lang}
               </span>
-            </div>
-            <div class="font-bold text-lg text-m3-on-surface">{PROFILE_INFO.name}</div>
-            <div class="text-xs text-m3-primary font-mono font-medium">@{PROFILE_INFO.handle} &bull; {PROFILE_INFO.location}</div>
+            ))}
           </div>
+        </div>
 
-          <div class="text-xs font-semibold uppercase tracking-wider text-m3-primary mb-3 flex items-center justify-between font-mono">
-            <span>Builder Telemetry</span>
-            <span class="w-2 h-2 rounded-full bg-m3-primary"></span>
+        <div class="p-4 sm:px-6 space-y-2">
+          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
+            Frameworks & Runtime
           </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
-              <div class="text-xl font-extrabold text-m3-on-surface font-mono">{PROFILE_INFO.stats.publicRepos}</div>
-              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Public Repos</div>
-            </div>
-
-            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
-              <div class="text-xl font-extrabold text-m3-primary font-mono">{PROFILE_INFO.stats.homelabContainers}</div>
-              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Homelab Containers</div>
-            </div>
-
-            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
-              <div class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">ICT</div>
-              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Student Focus</div>
-            </div>
-
-            <div class="p-2.5 rounded-m3-lg bg-m3-surface-container text-center">
-              <div class="text-xl font-extrabold text-m3-tertiary font-mono">VN</div>
-              <div class="text-[11px] text-m3-on-surface-variant mt-0.5">Vietnam</div>
-            </div>
+          <div class="flex flex-wrap gap-1.5">
+            {PROFILE_INFO.skills.frameworks.map((fw) => (
+              <span class="rounded-lg font-mono text-xs px-2.5 py-0.5 border border-ed-border bg-ed-surface-subtle text-ed-text">
+                {fw}
+              </span>
+            ))}
           </div>
+        </div>
 
-          <div class="mt-4 pt-3 border-t border-m3-outline-variant/30 text-xs italic text-m3-on-surface-variant font-mono text-center">
-            "{PROFILE_INFO.stats.motto}"
+        <div class="p-4 sm:px-6 space-y-2">
+          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
+            Infrastructure & Protocols
           </div>
-        </M3Card>
+          <div class="flex flex-wrap gap-1.5">
+            {PROFILE_INFO.skills.infrastructure.map((infra) => (
+              <span class="rounded-lg font-mono text-xs px-2.5 py-0.5 border border-ed-border bg-ed-surface-subtle text-ed-text">
+                {infra}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Tools & Technologies (From GitHub README) -->
-  <section class="py-8 border-t border-m3-outline-variant/20">
-    <div class="mb-6">
-      <h2 class="text-xl sm:text-2xl font-bold text-m3-on-surface flex items-center gap-2">
-        <svg class="w-6 h-6 text-m3-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
-        <span>Tools I reach for</span>
-      </h2>
-      <p class="text-sm text-m3-on-surface-variant mt-1">
-        Languages, frameworks, and infrastructure tools I use across side projects and my homelab.
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <!-- Languages -->
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="hover:border-m3-primary/50 transition-colors">
-        <div class="text-xs font-bold uppercase tracking-wider text-m3-primary mb-2 font-mono">
-          Languages
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {PROFILE_INFO.skills.languages.map((skill) => (
-            <span class="text-xs px-2.5 py-1 rounded-m3-xs bg-m3-surface-container-high text-m3-on-surface font-mono">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </M3Card>
-
-      <!-- Frameworks -->
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="hover:border-m3-primary/50 transition-colors">
-        <div class="text-xs font-bold uppercase tracking-wider text-m3-tertiary mb-2 font-mono">
-          Frameworks & Libraries
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {PROFILE_INFO.skills.frameworks.map((skill) => (
-            <span class="text-xs px-2.5 py-1 rounded-m3-xs bg-m3-surface-container-high text-m3-on-surface font-mono">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </M3Card>
-
-      <!-- Infrastructure & Homelab -->
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="hover:border-m3-primary/50 transition-colors">
-        <div class="text-xs font-bold uppercase tracking-wider text-m3-secondary mb-2 font-mono">
-          Infrastructure & Homelab
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {PROFILE_INFO.skills.infrastructure.map((skill) => (
-            <span class="text-xs px-2.5 py-1 rounded-m3-xs bg-m3-surface-container-high text-m3-on-surface font-mono">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </M3Card>
-    </div>
-  </section>
-
-  <!-- Featured Projects (Things I've Built) -->
-  <section id="shipped-projects" class="py-10 border-t border-m3-outline-variant/20">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+  <!-- 02 // FLAGSHIP PRODUCTION SYSTEMS -->
+  <section id="flagship-systems" class="mb-14 scroll-mt-20">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 pb-3 border-b border-ed-border">
       <div>
-        <div class="text-xs font-bold uppercase tracking-wider text-m3-primary mb-1 font-mono">
-          Codebases & Systems
+        <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
+          02 // Flagship Production Systems
         </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-m3-on-surface">
-          Things I've built
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ed-text mt-1">
+          Core Architecture & Builds
         </h2>
-        <p class="text-sm text-m3-on-surface-variant mt-1 max-w-2xl">
-          Real tools and backends running in production. Built to solve actual pain points with zero fluff.
-        </p>
       </div>
-
-      <div class="flex items-center gap-2 text-xs text-m3-on-surface-variant font-mono">
-        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>Build Hydration: Live GitHub API</span>
+      <div class="flex items-center gap-2 font-mono text-xs text-ed-text-muted">
+        <span class="w-2 h-2 rounded-full bg-ed-status"></span>
+        <span>Interactive SVG Pipeline &bull; Live GitHub Hydration</span>
       </div>
     </div>
 
-    <!-- Project Stack -->
     <div class="space-y-8">
-      {CURATED_PROJECTS.map((project) => {
-        const ghMeta = githubMetaMap[project.repoSlug];
-        return (
-          <M3Card variant="elevated" padding="lg" rounded="xl" class="border border-m3-outline-variant/40 hover:border-m3-primary/40 transition-colors">
-            <!-- Header Row -->
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-m3-outline-variant/20">
-              <div class="space-y-1">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-m3-sm bg-m3-primary-container text-m3-on-primary-container font-mono">
-                    {project.category}
-                  </span>
-                  {project.featured && (
-                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-m3-sm bg-m3-tertiary-container text-m3-on-tertiary-container font-mono">
-                      Featured Build
-                    </span>
-                  )}
-                  <span class="text-xs font-mono text-m3-on-surface-variant/80">
-                    {project.repoSlug}
-                  </span>
-                </div>
-                <h3 class="text-xl sm:text-2xl font-bold text-m3-on-surface">
-                  {project.title}
-                </h3>
-                <p class="text-sm text-m3-on-surface-variant">
-                  {project.tagline}
-                </p>
-              </div>
-
-              <!-- Language & Repo Link -->
-              <div class="flex items-center gap-3 self-start lg:self-center">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-m3-full bg-m3-surface-container text-xs font-mono text-m3-on-surface">
-                  <span class="w-2 h-2 rounded-full bg-m3-primary"></span>
-                  <span>{ghMeta?.language ?? "Python"}</span>
-                </div>
-
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-m3-full bg-m3-secondary-container text-m3-on-secondary-container text-xs font-medium hover:bg-m3-secondary-container/80 transition-colors"
-                >
-                  <span>View Repository</span>
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            <!-- Content Grid: Why I Built This & How It Works -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-              <!-- Left Column -->
-              <div class="space-y-4">
-                <div>
-                  <h4 class="text-xs font-bold uppercase tracking-wider text-m3-primary mb-1 flex items-center gap-1.5 font-mono">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Why I Built This</span>
-                  </h4>
-                  <p class="text-sm text-m3-on-surface-variant leading-relaxed">
-                    {project.whyIBuiltThis}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 class="text-xs font-bold uppercase tracking-wider text-m3-secondary mb-1 flex items-center gap-1.5 font-mono">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                    <span>How It Works</span>
-                  </h4>
-                  <p class="text-sm text-m3-on-surface-variant leading-relaxed">
-                    {project.howItWorks}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Right Column: Key Highlights -->
-              <div class="bg-m3-surface-container-low/70 p-4 rounded-m3-lg border border-m3-outline-variant/30 space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-m3-tertiary font-mono">
-                  Technical Highlights
-                </h4>
-                <ul class="space-y-2">
-                  {project.keyHighlights.map((highlight) => (
-                    <li class="flex items-start gap-2 text-xs text-m3-on-surface">
-                      <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <!-- Footer: Tech Stack Chips -->
-            <div class="mt-6 pt-4 border-t border-m3-outline-variant/20 flex flex-wrap items-center justify-between gap-4">
-              <div class="flex flex-wrap items-center gap-1.5">
-                <span class="text-xs text-m3-on-surface-variant font-medium mr-1 font-mono">Built with:</span>
-                {project.techStack.map((tech) => (
-                  <M3Chip variant="assist">
-                    {tech}
-                  </M3Chip>
-                ))}
-              </div>
-
-              <div>
-                <a
-                  href={`${import.meta.env.BASE_URL}lab`}
-                  class="text-xs font-medium text-m3-primary hover:underline inline-flex items-center gap-1"
-                >
-                  <span>See homelab & journey</span>
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </M3Card>
-        );
-      })}
+      {flagshipProjects.map((project) => (
+        <FlagshipCard
+          project={project}
+          ghMeta={githubMetaMap[project.repoSlug]}
+        />
+      ))}
     </div>
   </section>
 
-  <!-- More Public Projects -->
-  <section class="py-10 border-t border-m3-outline-variant/20">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+  <!-- 03 // EXPANDABLE ENGINEERING INDEX -->
+  <section id="engineering-index" class="mb-14 scroll-mt-20">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
       <div>
-        <h2 class="text-xl sm:text-2xl font-bold text-m3-on-surface">
-          More from @{PROFILE_INFO.handle} on GitHub
+        <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
+          03 // Engineering Index
+        </div>
+        <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight text-ed-text mt-1">
+          Additional Systems, Daemons & Tooling
         </h2>
-        <p class="text-sm text-m3-on-surface-variant">
-          Additional utilities, enterprise demos, and experiments.
+        <p class="text-xs sm:text-sm text-ed-text-secondary mt-0.5">
+          Click any row to expand problem context, system mechanics, and technical highlights inline.
         </p>
       </div>
 
-      <M3Button href={PROFILE_INFO.githubUrl} target="_blank" variant="outlined">
-        <span>View all {PROFILE_INFO.stats.publicRepos} Repositories</span>
-        <svg slot="trailing-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-        </svg>
-      </M3Button>
+      <a
+        href={PROFILE_INFO.githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 font-mono text-xs text-ed-accent hover:underline shrink-0"
+      >
+        <span>Browse all {PROFILE_INFO.stats.publicRepos} repositories on GitHub</span>
+        <span>↗</span>
+      </a>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="flex flex-col justify-between hover:border-m3-primary/50 transition-colors">
-        <div>
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-sm font-bold text-m3-on-surface font-mono">VMS</span>
-            <span class="text-xs px-2 py-0.5 rounded-m3-xs bg-m3-surface-container font-mono">JavaScript</span>
-          </div>
-          <p class="text-xs text-m3-on-surface-variant mt-2 leading-relaxed">
-            Enterprise Visitor Management System (VMS) demo featuring badge issuance, guest check-in workflows, and security audit logs.
-          </p>
-        </div>
-        <div class="mt-4 pt-2 border-t border-m3-outline-variant/20 flex items-center justify-between text-xs">
-          <span class="text-m3-on-surface-variant">Enterprise Demo</span>
-          <a href="https://github.com/arcrek/VMS" target="_blank" rel="noopener noreferrer" class="text-m3-primary font-medium hover:underline">
-            Inspect repo &rarr;
-          </a>
-        </div>
-      </M3Card>
-
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="flex flex-col justify-between hover:border-m3-primary/50 transition-colors">
-        <div>
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-sm font-bold text-m3-on-surface font-mono">price_board</span>
-            <span class="text-xs px-2 py-0.5 rounded-m3-xs bg-m3-surface-container font-mono">TypeScript</span>
-          </div>
-          <p class="text-xs text-m3-on-surface-variant mt-2 leading-relaxed">
-            A clean, self-hosted dynamic board for product pricing tiers, currency conversion, and promotional badge highlights.
-          </p>
-        </div>
-        <div class="mt-4 pt-2 border-t border-m3-outline-variant/20 flex items-center justify-between text-xs">
-          <span class="text-m3-on-surface-variant">Self-Hosted Board</span>
-          <a href="https://github.com/arcrek/price_board" target="_blank" rel="noopener noreferrer" class="text-m3-primary font-medium hover:underline">
-            Inspect repo &rarr;
-          </a>
-        </div>
-      </M3Card>
-
-      <M3Card variant="outlined" padding="sm" rounded="lg" class="flex flex-col justify-between hover:border-m3-primary/50 transition-colors">
-        <div>
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-sm font-bold text-m3-on-surface font-mono">canva-automation</span>
-            <span class="text-xs px-2 py-0.5 rounded-m3-xs bg-m3-surface-container font-mono">Python</span>
-          </div>
-          <p class="text-xs text-m3-on-surface-variant mt-2 leading-relaxed">
-            Fail-closed Canva browser automation for account checks, team sync, automated invites, and member removal.
-          </p>
-        </div>
-        <div class="mt-4 pt-2 border-t border-m3-outline-variant/20 flex items-center justify-between text-xs">
-          <span class="text-m3-on-surface-variant">Browser Automation</span>
-          <a href="https://github.com/arcrek/canva-automation" target="_blank" rel="noopener noreferrer" class="text-m3-primary font-medium hover:underline">
-            Inspect repo &rarr;
-          </a>
-        </div>
-      </M3Card>
+    <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface">
+      {indexProjects.map((project) => (
+        <ProjectRow
+          project={project}
+          ghMeta={githubMetaMap[project.repoSlug]}
+        />
+      ))}
     </div>
   </section>
 
-  <!-- Connect Card -->
-  <section class="my-10">
-    <M3Card variant="filled" padding="lg" rounded="xl" class="bg-m3-surface-container text-m3-on-surface border border-m3-outline-variant/30">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div class="space-y-2 max-w-xl">
-          <div class="text-xs font-bold uppercase tracking-wider text-m3-primary font-mono">
-            Get in touch
-          </div>
-          <h3 class="text-2xl font-bold">
-            Have an idea or want to chat about tech?
-          </h3>
-          <p class="text-sm text-m3-on-surface-variant leading-relaxed">
-            I'm an ICT student from Vietnam open to software engineering internships, open-source projects, and interesting technical problems.
-          </p>
+  <!-- 04 // DIRECT CONTACT STRIP -->
+  <section aria-labelledby="contact-heading">
+    <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="space-y-1.5 max-w-xl">
+        <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
+          04 // Dispatch & Contact
         </div>
-
-        <div class="flex flex-wrap items-center gap-3">
-          <M3Button href={`mailto:${PROFILE_INFO.email}`} variant="filled">
-            <svg slot="leading-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            Send Email
-          </M3Button>
-
-          <M3Button href={PROFILE_INFO.facebookUrl} target="_blank" variant="outlined">
-            Facebook
-          </M3Button>
-
-          <M3Button href={PROFILE_INFO.githubUrl} target="_blank" variant="tonal">
-            GitHub
-          </M3Button>
-        </div>
+        <h2 id="contact-heading" class="text-xl sm:text-2xl font-bold text-ed-text">
+          Open to software engineering internships and backend systems work.
+        </h2>
+        <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
+          Have a question about one of my repositories, or looking for an ICT student who ships real backend infrastructure? Reach out directly via email or GitHub.
+        </p>
       </div>
-    </M3Card>
+
+      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+        <a
+          href={`mailto:${PROFILE_INFO.email}`}
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 bg-ed-text text-ed-bg font-mono text-xs font-semibold hover:opacity-90"
+        >
+          <span>Send Email</span>
+          <span>↗</span>
+        </a>
+
+        <a
+          href={PROFILE_INFO.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
+        >
+          <span>GitHub (@{PROFILE_INFO.handle})</span>
+          <span>↗</span>
+        </a>
+
+        <a
+          href={PROFILE_INFO.facebookUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle font-mono text-xs"
+        >
+          <span>Facebook</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
   </section>
 </Layout>

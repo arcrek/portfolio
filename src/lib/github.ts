@@ -100,8 +100,16 @@ export const FALLBACK_REPOS: Record<string, GitHubRepoMeta> = {
   }
 };
 
+const repoMetaCache = new Map<string, GitHubRepoMeta>();
+const inFlightRepoRequests = new Map<string, Promise<GitHubRepoMeta>>();
+
 export async function fetchGitHubRepo(repoSlug: string): Promise<GitHubRepoMeta> {
-  const fallback = FALLBACK_REPOS[repoSlug] || {
+  const cached = repoMetaCache.get(repoSlug);
+  if (cached) {
+    return cached;
+  }
+
+  const fallback: GitHubRepoMeta = FALLBACK_REPOS[repoSlug] || {
     name: repoSlug.split("/")[1] || repoSlug,
     fullName: repoSlug,
     description: "",
@@ -109,54 +117,81 @@ export async function fetchGitHubRepo(repoSlug: string): Promise<GitHubRepoMeta>
     forks: 0,
     language: "Python",
     topics: [],
-    updatedAt: new Date().toISOString(),
+    updatedAt: "2026-10-01T00:00:00Z",
     htmlUrl: `https://github.com/${repoSlug}`,
     defaultBranch: "main"
   };
 
-  try {
-    const headers: Record<string, string> = {
-      "User-Agent": "Astro-Portfolio-Builder",
-      "Accept": "application/vnd.github.v3+json"
-    };
+  const token = typeof process !== "undefined" ? process.env.GITHUB_TOKEN : undefined;
+  const isDev = typeof import.meta !== "undefined" && Boolean(import.meta.env?.DEV);
 
-    const token = typeof process !== "undefined" ? process.env.GITHUB_TOKEN : undefined;
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const res = await fetch(`https://api.github.com/repos/${repoSlug}`, {
-      headers,
-      signal: AbortSignal.timeout(3000)
-    });
-
-    if (!res.ok) {
-      return fallback;
-    }
-
-    const data = await res.json();
-
-    // If repo is private, do not expose or leak
-    if (data.private) {
-      return fallback;
-    }
-
-    return {
-      name: data.name ?? fallback.name,
-      fullName: data.full_name ?? fallback.fullName,
-      description: data.description || fallback.description,
-      stars: data.stargazers_count ?? fallback.stars,
-      forks: data.forks_count ?? fallback.forks,
-      language: data.language ?? fallback.language,
-      topics: Array.isArray(data.topics) && data.topics.length > 0 ? data.topics : fallback.topics,
-      updatedAt: data.updated_at ?? fallback.updatedAt,
-      htmlUrl: data.html_url ?? fallback.htmlUrl,
-      defaultBranch: data.default_branch ?? fallback.defaultBranch
-    };
-  } catch {
-    // Fail gracefully to fallback without breaking build
+  // In local dev without a GITHUB_TOKEN, use the verified fallback baseline immediately
+  // so SSR / ClientRouter navigation to "/" never blocks on 3-second API timeouts.
+  if (isDev && !token) {
+    repoMetaCache.set(repoSlug, fallback);
     return fallback;
   }
+
+  const existingRequest = inFlightRepoRequests.get(repoSlug);
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  const requestPromise = (async (): Promise<GitHubRepoMeta> => {
+    try {
+      const headers: Record<string, string> = {
+        "User-Agent": "Astro-Portfolio-Builder",
+        "Accept": "application/vnd.github.v3+json"
+      };
+
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`https://api.github.com/repos/${repoSlug}`, {
+        headers,
+        signal: AbortSignal.timeout(1500)
+      });
+
+      if (!res.ok) {
+        repoMetaCache.set(repoSlug, fallback);
+        return fallback;
+      }
+
+      const data = await res.json();
+
+      // If repo is private, do not expose or leak
+      if (data.private) {
+        repoMetaCache.set(repoSlug, fallback);
+        return fallback;
+      }
+
+      const resolved: GitHubRepoMeta = {
+        name: data.name ?? fallback.name,
+        fullName: data.full_name ?? fallback.fullName,
+        description: data.description || fallback.description,
+        stars: data.stargazers_count ?? fallback.stars,
+        forks: data.forks_count ?? fallback.forks,
+        language: data.language ?? fallback.language,
+        topics: Array.isArray(data.topics) && data.topics.length > 0 ? data.topics : fallback.topics,
+        updatedAt: data.updated_at ?? fallback.updatedAt,
+        htmlUrl: data.html_url ?? fallback.htmlUrl,
+        defaultBranch: data.default_branch ?? fallback.defaultBranch
+      };
+
+      repoMetaCache.set(repoSlug, resolved);
+      return resolved;
+    } catch {
+      // Fail gracefully to fallback without breaking build
+      repoMetaCache.set(repoSlug, fallback);
+      return fallback;
+    } finally {
+      inFlightRepoRequests.delete(repoSlug);
+    }
+  })();
+
+  inFlightRepoRequests.set(repoSlug, requestPromise);
+  return requestPromise;
 }
 
 export async function fetchAllCuratedRepos(repoSlugs: string[]): Promise<Record<string, GitHubRepoMeta>> {
@@ -168,3 +203,4 @@ export async function fetchAllCuratedRepos(repoSlugs: string[]): Promise<Record<
   );
   return Object.fromEntries(entries);
 }
+
