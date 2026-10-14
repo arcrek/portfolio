@@ -100,6 +100,7 @@ const startY = 24;
             role="button"
             aria-pressed={isFirst ? "true" : "false"}
             aria-label={`Stage ${node.step}: ${node.label} (${node.protocol})`}
+            data-node-x={x + nodeWidth / 2}
           >
             <!-- Node Box -->
             <rect
@@ -165,18 +166,47 @@ const startY = 24;
     </svg>
   </div>
 
-  <!-- Interactive Stage Inspection Readout (Stacked Grid to Prevent Layout Shift) -->
+  <!-- Interactive Stage Inspection Readout -->
   {firstNode && (
-    <div
-      class="px-4 py-3 border-t border-ed-border bg-ed-surface flex flex-col sm:flex-row sm:items-center justify-between gap-2"
-      aria-live="polite"
-    >
-      <div class="grid flex-1 min-w-0">
+    <div class="px-3.5 sm:px-4 py-3 border-t border-ed-border bg-ed-surface flex flex-col gap-2.5">
+      <!-- Controls & Metadata Header: Stage Badge on Left, Quick Step Pills on Right -->
+      <div class="flex flex-wrap items-center justify-between gap-2 min-w-0">
+        <span
+          class="ed-inspector-badge rounded-full font-mono text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border whitespace-nowrap shrink-0 max-w-full truncate"
+          data-inspector-badge
+        >
+          STAGE {firstNode.step} · {firstNode.protocol}
+        </span>
+
+        <!-- Quick Step Selector Pills -->
+        <div class="flex items-center gap-1 shrink-0" role="group" aria-label="Stage selector">
+          {nodes.map((node, idx) => (
+            <button
+              type="button"
+              class={`ed-step-pill m3-btn-expressive rounded-full font-mono text-[9.5px] sm:text-[10.5px] min-w-[22px] sm:min-w-[26px] h-5.5 sm:h-6 px-1 sm:px-1.5 border inline-flex items-center justify-center cursor-pointer transition-colors ${
+                idx === 0
+                  ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
+                  : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
+              }`}
+              data-step-trigger={idx}
+              data-step={node.step}
+              data-protocol={node.protocol}
+              aria-pressed={idx === 0 ? "true" : "false"}
+              aria-label={`Inspect stage ${node.step}: ${node.label}`}
+            >
+              {node.step}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Detail Body: Full Width Stage Label and Description -->
+      <div class="grid w-full min-w-0" aria-live="polite">
         {nodes.map((node, idx) => {
           const isFirst = idx === 0;
           return (
             <div
-              class={`col-start-1 row-start-1 flex items-start sm:items-center gap-2.5 text-xs transition-opacity duration-150 ${
+              class={`col-start-1 row-start-1 min-w-0 transition-opacity duration-150 ${
                 isFirst
                   ? "opacity-100 visible"
                   : "opacity-0 invisible pointer-events-none select-none"
@@ -184,41 +214,34 @@ const startY = 24;
               data-inspector-panel={idx}
               aria-hidden={isFirst ? "false" : "true"}
             >
-              <span class="ed-inspector-badge rounded-full font-mono text-[11px] font-semibold px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border shrink-0">
-                STAGE {node.step} · {node.protocol}
-              </span>
-              <span class="font-mono font-semibold text-ed-text shrink-0">
-                {node.label}:
-              </span>
-              <span class="text-ed-text-secondary leading-relaxed">
-                {node.detail}
-              </span>
+              <p class="text-xs leading-relaxed text-ed-text-secondary min-w-0 break-words">
+                <span class="font-mono font-semibold text-ed-text mr-1.5">
+                  {node.label}:
+                </span>
+                <span>{node.detail}</span>
+              </p>
             </div>
           );
         })}
       </div>
-
-      <!-- Quick Step Selector Pills -->
-      <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-        {nodes.map((node, idx) => (
-          <button
-            type="button"
-            class={`ed-step-pill m3-btn-expressive rounded-full font-mono text-[10px] px-2 py-0.5 border cursor-pointer ${
-              idx === 0
-                ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
-                : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
-            }`}
-            data-step-trigger={idx}
-            aria-pressed={idx === 0 ? "true" : "false"}
-            aria-label={`Inspect stage ${node.step}: ${node.label}`}
-          >
-            {node.step}
-          </button>
-        ))}
-      </div>
     </div>
   )}
 </div>
+
+<style>
+  .ed-arch-node:focus-visible {
+    outline: none;
+  }
+  .ed-arch-node:focus-visible .ed-node-rect {
+    stroke: var(--ed-accent) !important;
+    stroke-width: 2.25px !important;
+    filter: drop-shadow(0 0 3px var(--ed-accent));
+  }
+  .ed-step-pill:focus-visible {
+    outline: 2px solid var(--ed-accent);
+    outline-offset: 1px;
+  }
+</style>
 
 <script is:inline>
   function initArchitectureDiagrams() {
@@ -227,11 +250,13 @@ const startY = 24;
       if (root.dataset.bound === "true") return;
       root.dataset.bound = "true";
 
+      const surface = root.querySelector(".ed-diagram-surface");
       const nodes = root.querySelectorAll(".ed-arch-node");
       const pills = root.querySelectorAll("[data-step-trigger]");
+      const badge = root.querySelector("[data-inspector-badge]");
       const panels = root.querySelectorAll("[data-inspector-panel]");
 
-      function activateIndex(activeIndex) {
+      function activateIndex(activeIndex, options = {}) {
         nodes.forEach((node, idx) => {
           const rect = node.querySelector(".ed-node-rect");
           const isActive = idx === activeIndex;
@@ -249,29 +274,57 @@ const startY = 24;
           }
         });
 
+        if (badge && pills[activeIndex]) {
+          const p = pills[activeIndex];
+          badge.textContent = `STAGE ${p.dataset.step} · ${p.dataset.protocol}`;
+        }
+
         panels.forEach((panel, idx) => {
           const isActive = idx === activeIndex;
-          panel.className = `col-start-1 row-start-1 flex items-start sm:items-center gap-2.5 text-xs transition-opacity duration-150 ${
-            isActive
-              ? "opacity-100 visible"
-              : "opacity-0 invisible pointer-events-none select-none"
-          }`;
+          panel.classList.toggle("opacity-100", isActive);
+          panel.classList.toggle("visible", isActive);
+          panel.classList.toggle("opacity-0", !isActive);
+          panel.classList.toggle("invisible", !isActive);
+          panel.classList.toggle("pointer-events-none", !isActive);
+          panel.classList.toggle("select-none", !isActive);
           panel.setAttribute("aria-hidden", isActive ? "false" : "true");
         });
 
         pills.forEach((pill, idx) => {
           const isActive = idx === activeIndex;
           pill.setAttribute("aria-pressed", isActive ? "true" : "false");
-          pill.className = `ed-step-pill m3-btn-expressive rounded-full font-mono text-[10px] px-2 py-0.5 border cursor-pointer ${
-            isActive
-              ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
-              : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
-          }`;
+          pill.classList.toggle("border-ed-accent", isActive);
+          pill.classList.toggle("bg-ed-accent-soft", isActive);
+          pill.classList.toggle("text-ed-accent", isActive);
+          pill.classList.toggle("font-semibold", isActive);
+
+          pill.classList.toggle("border-ed-border", !isActive);
+          pill.classList.toggle("bg-ed-surface-subtle/60", !isActive);
+          pill.classList.toggle("text-ed-text-muted", !isActive);
         });
+
+        // Smooth scroll diagram canvas to active node on mobile/scrollable viewports
+        if (options.scroll !== false && surface && surface.scrollWidth > surface.clientWidth) {
+          const activeNode = nodes[activeIndex];
+          if (activeNode) {
+            const nodeCenterX = parseFloat(activeNode.dataset.nodeX || "0");
+            if (nodeCenterX > 0) {
+              const svgEl = surface.querySelector("svg");
+              const svgWidth = svgEl ? (svgEl.clientWidth || svgEl.getBoundingClientRect().width) : 900;
+              const scale = svgWidth / 900;
+              const targetLeft = nodeCenterX * scale - surface.clientWidth / 2;
+              const isReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              surface.scrollTo({
+                left: Math.max(0, targetLeft),
+                behavior: isReducedMotion ? "auto" : "smooth"
+              });
+            }
+          }
+        }
       }
 
       nodes.forEach((node, idx) => {
-        node.addEventListener("mouseenter", () => activateIndex(idx));
+        node.addEventListener("mouseenter", () => activateIndex(idx, { scroll: false }));
         node.addEventListener("click", () => activateIndex(idx));
         node.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
