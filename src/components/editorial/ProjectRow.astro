@@ -124,7 +124,10 @@ const primaryLang = ghMeta?.language ?? project.techStack[0] ?? "Python";
     }
   }
 
-  syncHashProjectRow();
-  window.addEventListener("hashchange", syncHashProjectRow);
-  document.addEventListener("astro:page-load", syncHashProjectRow);
+  if (!window.__edProjectRowBound) {
+    window.__edProjectRowBound = true;
+    syncHashProjectRow();
+    window.addEventListener("hashchange", syncHashProjectRow);
+    document.addEventListener("astro:page-load", syncHashProjectRow);
+  }
 </script>

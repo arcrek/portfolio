@@ -98,12 +98,8 @@ const startY = 24;
             class="ed-arch-node cursor-pointer focus:outline-none"
             tabindex="0"
             role="button"
+            aria-pressed={isFirst ? "true" : "false"}
             aria-label={`Stage ${node.step}: ${node.label} (${node.protocol})`}
-            data-node-index={idx}
-            data-node-step={node.step}
-            data-node-label={node.label}
-            data-node-protocol={node.protocol}
-            data-node-detail={node.detail}
           >
             <!-- Node Box -->
             <rect
@@ -188,22 +184,13 @@ const startY = 24;
               data-inspector-panel={idx}
               aria-hidden={isFirst ? "false" : "true"}
             >
-              <span
-                class="ed-inspector-badge rounded-full font-mono text-[11px] font-semibold px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border shrink-0"
-                data-inspector-badge={ isFirst ? "" : undefined }
-              >
+              <span class="ed-inspector-badge rounded-full font-mono text-[11px] font-semibold px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border shrink-0">
                 STAGE {node.step} · {node.protocol}
               </span>
-              <span
-                class="font-mono font-semibold text-ed-text shrink-0"
-                data-inspector-label={ isFirst ? "" : undefined }
-              >
+              <span class="font-mono font-semibold text-ed-text shrink-0">
                 {node.label}:
               </span>
-              <span
-                class="text-ed-text-secondary leading-relaxed"
-                data-inspector-detail={ isFirst ? "" : undefined }
-              >
+              <span class="text-ed-text-secondary leading-relaxed">
                 {node.detail}
               </span>
             </div>
@@ -222,6 +209,7 @@ const startY = 24;
                 : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
             }`}
             data-step-trigger={idx}
+            aria-pressed={idx === 0 ? "true" : "false"}
             aria-label={`Inspect stage ${node.step}: ${node.label}`}
           >
             {node.step}
@@ -247,6 +235,7 @@ const startY = 24;
         nodes.forEach((node, idx) => {
           const rect = node.querySelector(".ed-node-rect");
           const isActive = idx === activeIndex;
+          node.setAttribute("aria-pressed", isActive ? "true" : "false");
           if (rect) {
             rect.setAttribute(
               "fill",
@@ -272,6 +261,7 @@ const startY = 24;
 
         pills.forEach((pill, idx) => {
           const isActive = idx === activeIndex;
+          pill.setAttribute("aria-pressed", isActive ? "true" : "false");
           pill.className = `ed-step-pill m3-btn-expressive rounded-full font-mono text-[10px] px-2 py-0.5 border cursor-pointer ${
             isActive
               ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
@@ -298,5 +288,8 @@ const startY = 24;
   }
 
   initArchitectureDiagrams();
-  document.addEventListener("astro:page-load", initArchitectureDiagrams);
+  if (!window.__edArchDiagramBound) {
+    window.__edArchDiagramBound = true;
+    document.addEventListener("astro:page-load", initArchitectureDiagrams);
+  }
 </script>
