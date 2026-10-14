@@ -1,0 +1,302 @@
+---
+import type { ArchitectureFlow } from "../../data/projects";
+
+interface Props {
+  diagramId: string;
+  flow: ArchitectureFlow;
+}
+
+const { diagramId, flow } = Astro.props;
+const nodes = flow.nodes;
+const firstNode = nodes[0];
+
+// Compute horizontal SVG coordinates for up to 5 pipeline stages (viewBox 0 0 900 116)
+const nodeWidth = 148;
+const nodeHeight = 68;
+const gap = 30;
+const startX = 18;
+const startY = 24;
+---
+
+<div
+  class="ed-arch-diagram rounded-2xl overflow-hidden border border-ed-border bg-ed-surface"
+  data-diagram-root={diagramId}
+>
+  <!-- Diagram Header Bar -->
+  <div class="px-4 py-2.5 border-b border-ed-border bg-ed-surface-subtle/60 flex flex-wrap items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-ed-accent"></span>
+      <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text">
+        {flow.title}
+      </span>
+    </div>
+    <span class="font-mono text-[11px] text-ed-text-muted">
+      {flow.summary}
+    </span>
+  </div>
+
+  <!-- Interactive SVG Canvas -->
+  <div class="ed-diagram-surface px-3 py-4 overflow-x-auto">
+    <svg
+      viewBox="0 0 900 116"
+      width="900"
+      height="116"
+      class="w-full min-w-[680px] h-auto block select-none"
+      role="img"
+      aria-label={flow.title}
+    >
+      <defs>
+        <marker
+          id={`arrow-${diagramId}`}
+          viewBox="0 0 10 10"
+          refX="7"
+          refY="5"
+          markerWidth="5"
+          markerHeight="5"
+          orient="auto-start-reverse"
+        >
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="var(--ed-accent)" />
+        </marker>
+      </defs>
+
+      <!-- Animated Flow Connectors between Nodes -->
+      {nodes.slice(0, -1).map((_, idx) => {
+        const x1 = startX + idx * (nodeWidth + gap) + nodeWidth;
+        const x2 = startX + (idx + 1) * (nodeWidth + gap);
+        const y = startY + nodeHeight / 2;
+        return (
+          <g>
+            <line
+              x1={x1}
+              y1={y}
+              x2={x2}
+              y2={y}
+              stroke="var(--ed-border-strong)"
+              stroke-width="1.5"
+            />
+            <line
+              x1={x1}
+              y1={y}
+              x2={x2 - 3}
+              y2={y}
+              stroke="var(--ed-accent)"
+              stroke-width="1.75"
+              class="ed-flow-line"
+              marker-end={`url(#arrow-${diagramId})`}
+            />
+          </g>
+        );
+      })}
+
+      <!-- Interactive Pipeline Stage Nodes -->
+      {nodes.map((node, idx) => {
+        const x = startX + idx * (nodeWidth + gap);
+        const y = startY;
+        const isFirst = idx === 0;
+        return (
+          <g
+            class="ed-arch-node cursor-pointer focus:outline-none"
+            tabindex="0"
+            role="button"
+            aria-label={`Stage ${node.step}: ${node.label} (${node.protocol})`}
+            data-node-index={idx}
+            data-node-step={node.step}
+            data-node-label={node.label}
+            data-node-protocol={node.protocol}
+            data-node-detail={node.detail}
+          >
+            <!-- Node Box -->
+            <rect
+              class="ed-node-rect transition-colors duration-150"
+              x={x}
+              y={y}
+              width={nodeWidth}
+              height={nodeHeight}
+              rx="12"
+              fill={isFirst ? "var(--ed-accent-soft)" : "var(--ed-surface)"}
+              stroke={isFirst ? "var(--ed-accent)" : "var(--ed-border-strong)"}
+              stroke-width={isFirst ? "1.75" : "1"}
+            />
+
+            <!-- Step Number Badge -->
+            <text
+              x={x + 12}
+              y={y + 19}
+              fill="var(--ed-accent)"
+              font-family="var(--font-mono)"
+              font-size="10"
+              font-weight="600"
+            >
+              [{node.step}]
+            </text>
+
+            <!-- Protocol Tag -->
+            <text
+              x={x + nodeWidth - 12}
+              y={y + 19}
+              text-anchor="end"
+              fill="var(--ed-text-muted)"
+              font-family="var(--font-mono)"
+              font-size="9.5"
+            >
+              {node.protocol}
+            </text>
+
+            <!-- Divider Line inside Node -->
+            <line
+              x1={x + 12}
+              y1={y + 27}
+              x2={x + nodeWidth - 12}
+              y2={y + 27}
+              stroke="var(--ed-border)"
+              stroke-width="1"
+            />
+
+            <!-- Node Primary Title -->
+            <text
+              x={x + 12}
+              y={y + 49}
+              fill="var(--ed-text)"
+              font-family="var(--font-mono)"
+              font-size="12"
+              font-weight="600"
+            >
+              {node.label}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+
+  <!-- Interactive Stage Inspection Readout (Stacked Grid to Prevent Layout Shift) -->
+  {firstNode && (
+    <div
+      class="px-4 py-3 border-t border-ed-border bg-ed-surface flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+      aria-live="polite"
+    >
+      <div class="grid flex-1 min-w-0">
+        {nodes.map((node, idx) => {
+          const isFirst = idx === 0;
+          return (
+            <div
+              class={`col-start-1 row-start-1 flex items-start sm:items-center gap-2.5 text-xs transition-opacity duration-150 ${
+                isFirst
+                  ? "opacity-100 visible"
+                  : "opacity-0 invisible pointer-events-none select-none"
+              }`}
+              data-inspector-panel={idx}
+              aria-hidden={isFirst ? "false" : "true"}
+            >
+              <span
+                class="ed-inspector-badge rounded-full font-mono text-[11px] font-semibold px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border shrink-0"
+                data-inspector-badge={ isFirst ? "" : undefined }
+              >
+                STAGE {node.step} · {node.protocol}
+              </span>
+              <span
+                class="font-mono font-semibold text-ed-text shrink-0"
+                data-inspector-label={ isFirst ? "" : undefined }
+              >
+                {node.label}:
+              </span>
+              <span
+                class="text-ed-text-secondary leading-relaxed"
+                data-inspector-detail={ isFirst ? "" : undefined }
+              >
+                {node.detail}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Quick Step Selector Pills -->
+      <div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+        {nodes.map((node, idx) => (
+          <button
+            type="button"
+            class={`ed-step-pill m3-btn-expressive rounded-full font-mono text-[10px] px-2 py-0.5 border cursor-pointer ${
+              idx === 0
+                ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
+                : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
+            }`}
+            data-step-trigger={idx}
+            aria-label={`Inspect stage ${node.step}: ${node.label}`}
+          >
+            {node.step}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
+<script is:inline>
+  function initArchitectureDiagrams() {
+    const roots = document.querySelectorAll("[data-diagram-root]");
+    roots.forEach((root) => {
+      if (root.dataset.bound === "true") return;
+      root.dataset.bound = "true";
+
+      const nodes = root.querySelectorAll(".ed-arch-node");
+      const pills = root.querySelectorAll("[data-step-trigger]");
+      const panels = root.querySelectorAll("[data-inspector-panel]");
+
+      function activateIndex(activeIndex) {
+        nodes.forEach((node, idx) => {
+          const rect = node.querySelector(".ed-node-rect");
+          const isActive = idx === activeIndex;
+          if (rect) {
+            rect.setAttribute(
+              "fill",
+              isActive ? "var(--ed-accent-soft)" : "var(--ed-surface)"
+            );
+            rect.setAttribute(
+              "stroke",
+              isActive ? "var(--ed-accent)" : "var(--ed-border-strong)"
+            );
+            rect.setAttribute("stroke-width", isActive ? "1.75" : "1");
+          }
+        });
+
+        panels.forEach((panel, idx) => {
+          const isActive = idx === activeIndex;
+          panel.className = `col-start-1 row-start-1 flex items-start sm:items-center gap-2.5 text-xs transition-opacity duration-150 ${
+            isActive
+              ? "opacity-100 visible"
+              : "opacity-0 invisible pointer-events-none select-none"
+          }`;
+          panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        pills.forEach((pill, idx) => {
+          const isActive = idx === activeIndex;
+          pill.className = `ed-step-pill m3-btn-expressive rounded-full font-mono text-[10px] px-2 py-0.5 border cursor-pointer ${
+            isActive
+              ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
+              : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
+          }`;
+        });
+      }
+
+      nodes.forEach((node, idx) => {
+        node.addEventListener("mouseenter", () => activateIndex(idx));
+        node.addEventListener("click", () => activateIndex(idx));
+        node.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            activateIndex(idx);
+          }
+        });
+      });
+
+      pills.forEach((pill, idx) => {
+        pill.addEventListener("click", () => activateIndex(idx));
+      });
+    });
+  }
+
+  initArchitectureDiagrams();
+  document.addEventListener("astro:page-load", initArchitectureDiagrams);
+</script>

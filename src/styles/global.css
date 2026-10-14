@@ -1,217 +1,207 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: optional;
+  src: url("/fonts/plus-jakarta-sans-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans Fallback";
+  src: local("DejaVu Sans"), local("Arial"), local("Helvetica Neue"), local("Roboto");
+  size-adjust: 105.2%;
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: optional;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("DejaVu Sans Mono"), local("Courier New"), local("monospace");
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
 :root {
-  /* Material 3 Light Theme Tokens (Seed: Refined Technical Indigo / Deep Blue) */
-  --md-sys-color-primary: #0061a4;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #d1e4ff;
-  --md-sys-color-on-primary-container: #001d36;
+  /* Architectural M3 + Editorial Hybrid — Light Theme (Tonal Cobalt-Slate) */
+  --ed-bg: #f8fafc;
+  --ed-surface: #ffffff;
+  --ed-surface-subtle: #f1f5f9;
+  --ed-surface-muted: #e2e8f0;
 
-  --md-sys-color-secondary: #535f70;
-  --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #d7e3f7;
-  --md-sys-color-on-secondary-container: #101c2b;
+  --ed-text: #090d16;
+  --ed-text-secondary: #334155;
+  --ed-text-muted: #64748b;
 
-  --md-sys-color-tertiary: #6b5778;
-  --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #f2daff;
-  --md-sys-color-on-tertiary-container: #251431;
+  --ed-border: #e2e8f0;
+  --ed-border-strong: #cbd5e1;
 
-  --md-sys-color-error: #ba1a1a;
-  --md-sys-color-on-error: #ffffff;
-  --md-sys-color-error-container: #ffdad6;
-  --md-sys-color-on-error-container: #410002;
+  --ed-accent: #0284c7;
+  --ed-accent-soft: rgba(2, 132, 199, 0.1);
+  --ed-accent-border: rgba(2, 132, 199, 0.35);
 
-  --md-sys-color-surface: #f8f9ff;
-  --md-sys-color-on-surface: #191c20;
-  --md-sys-color-on-surface-variant: #44474e;
-  --md-sys-color-outline: #74777f;
-  --md-sys-color-outline-variant: #c4c7d0;
+  --ed-status: #059669;
+  --ed-status-soft: rgba(5, 150, 105, 0.12);
 
-  --md-sys-color-surface-dim: #d8dae0;
-  --md-sys-color-surface-bright: #f8f9ff;
-  --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #f2f3f9;
-  --md-sys-color-surface-container: #eceef4;
-  --md-sys-color-surface-container-high: #e6e8ee;
-  --md-sys-color-surface-container-highest: #e1e2e8;
-
-  --md-sys-color-inverse-surface: #2e3036;
-  --md-sys-color-inverse-on-surface: #f0f0f7;
-  --md-sys-color-inverse-primary: #9ecaff;
-
-  /* Material 3 Elevation & Shadow Tokens */
-  --md-sys-elevation-1: 0 1px 3px 1px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.18);
-  --md-sys-elevation-2: 0 2px 6px 2px rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.18);
-  --md-sys-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.18);
-
-  /* Material 3 State Layer Opacities */
-  --md-sys-state-hover-opacity: 0.08;
-  --md-sys-state-focus-opacity: 0.12;
-  --md-sys-state-pressed-opacity: 0.12;
-  --md-sys-state-dragged-opacity: 0.16;
-
-  /* Shape tokens */
-  --md-shape-none: 0px;
-  --md-shape-xs: 4px;
-  --md-shape-sm: 8px;
-  --md-shape-md: 12px;
-  --md-shape-lg: 16px;
-  --md-shape-xl: 28px;
-  --md-shape-full: 9999px;
+  --m3-ease-spring: cubic-bezier(0.2, 0, 0, 1);
 }
 
 html.dark {
-  /* Material 3 Dark Theme Tokens */
-  --md-sys-color-primary: #9ecaff;
-  --md-sys-color-on-primary: #003258;
-  --md-sys-color-primary-container: #00497d;
-  --md-sys-color-on-primary-container: #d1e4ff;
+  /* Architectural M3 + Editorial Hybrid — Dark Theme (Deep Slate Container & Electric Sky) */
+  --ed-bg: #090d16;
+  --ed-surface: #0f1523;
+  --ed-surface-subtle: #161f33;
+  --ed-surface-muted: #1e293b;
 
-  --md-sys-color-secondary: #bbc7db;
-  --md-sys-color-on-secondary: #253140;
-  --md-sys-color-secondary-container: #3b4858;
-  --md-sys-color-on-secondary-container: #d7e3f7;
+  --ed-text: #f1f5f9;
+  --ed-text-secondary: #94a3b8;
+  --ed-text-muted: #64748b;
 
-  --md-sys-color-tertiary: #d6bee4;
-  --md-sys-color-on-tertiary: #3b2948;
-  --md-sys-color-tertiary-container: #523f5f;
-  --md-sys-color-on-tertiary-container: #f2daff;
+  --ed-border: #1e293b;
+  --ed-border-strong: #334155;
 
-  --md-sys-color-error: #ffb4ab;
-  --md-sys-color-on-error: #690005;
-  --md-sys-color-error-container: #93000a;
-  --md-sys-color-on-error-container: #ffdad6;
+  --ed-accent: #38bdf8;
+  --ed-accent-soft: rgba(56, 189, 248, 0.12);
+  --ed-accent-border: rgba(56, 189, 248, 0.42);
 
-  --md-sys-color-surface: #111318;
-  --md-sys-color-on-surface: #e1e2e8;
-  --md-sys-color-on-surface-variant: #c4c7d0;
-  --md-sys-color-outline: #8e9099;
-  --md-sys-color-outline-variant: #44474e;
-
-  --md-sys-color-surface-dim: #111318;
-  --md-sys-color-surface-bright: #37393e;
-  --md-sys-color-surface-container-lowest: #0c0e13;
-  --md-sys-color-surface-container-low: #191c20;
-  --md-sys-color-surface-container: #1d2024;
-  --md-sys-color-surface-container-high: #282a2f;
-  --md-sys-color-surface-container-highest: #33353a;
-
-  --md-sys-color-inverse-surface: #e1e2e8;
-  --md-sys-color-inverse-on-surface: #191c20;
-  --md-sys-color-inverse-primary: #0061a4;
-
-  --md-sys-elevation-1: 0 1px 3px 1px rgba(0, 0, 0, 0.35), 0 1px 2px 0 rgba(0, 0, 0, 0.45);
-  --md-sys-elevation-2: 0 2px 6px 2px rgba(0, 0, 0, 0.35), 0 1px 2px 0 rgba(0, 0, 0, 0.45);
-  --md-sys-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.35), 0 1px 3px 0 rgba(0, 0, 0, 0.45);
+  --ed-status: #34d399;
+  --ed-status-soft: rgba(52, 211, 153, 0.14);
 }
 
 @theme {
-  --color-m3-primary: var(--md-sys-color-primary);
-  --color-m3-on-primary: var(--md-sys-color-on-primary);
-  --color-m3-primary-container: var(--md-sys-color-primary-container);
-  --color-m3-on-primary-container: var(--md-sys-color-on-primary-container);
+  --color-ed-bg: var(--ed-bg);
+  --color-ed-surface: var(--ed-surface);
+  --color-ed-surface-subtle: var(--ed-surface-subtle);
+  --color-ed-surface-muted: var(--ed-surface-muted);
 
-  --color-m3-secondary: var(--md-sys-color-secondary);
-  --color-m3-on-secondary: var(--md-sys-color-on-secondary);
-  --color-m3-secondary-container: var(--md-sys-color-secondary-container);
-  --color-m3-on-secondary-container: var(--md-sys-color-on-secondary-container);
+  --color-ed-text: var(--ed-text);
+  --color-ed-text-secondary: var(--ed-text-secondary);
+  --color-ed-text-muted: var(--ed-text-muted);
 
-  --color-m3-tertiary: var(--md-sys-color-tertiary);
-  --color-m3-on-tertiary: var(--md-sys-color-on-tertiary);
-  --color-m3-tertiary-container: var(--md-sys-color-tertiary-container);
-  --color-m3-on-tertiary-container: var(--md-sys-color-on-tertiary-container);
+  --color-ed-border: var(--ed-border);
+  --color-ed-border-strong: var(--ed-border-strong);
 
-  --color-m3-error: var(--md-sys-color-error);
-  --color-m3-on-error: var(--md-sys-color-on-error);
-  --color-m3-error-container: var(--md-sys-color-error-container);
-  --color-m3-on-error-container: var(--md-sys-color-on-error-container);
+  --color-ed-accent: var(--ed-accent);
+  --color-ed-accent-soft: var(--ed-accent-soft);
+  --color-ed-accent-border: var(--ed-accent-border);
 
-  --color-m3-surface: var(--md-sys-color-surface);
-  --color-m3-on-surface: var(--md-sys-color-on-surface);
-  --color-m3-on-surface-variant: var(--md-sys-color-on-surface-variant);
-  --color-m3-outline: var(--md-sys-color-outline);
-  --color-m3-outline-variant: var(--md-sys-color-outline-variant);
+  --color-ed-status: var(--ed-status);
+  --color-ed-status-soft: var(--ed-status-soft);
 
-  --color-m3-surface-dim: var(--md-sys-color-surface-dim);
-  --color-m3-surface-bright: var(--md-sys-color-surface-bright);
-  --color-m3-surface-container-lowest: var(--md-sys-color-surface-container-lowest);
-  --color-m3-surface-container-low: var(--md-sys-color-surface-container-low);
-  --color-m3-surface-container: var(--md-sys-color-surface-container);
-  --color-m3-surface-container-high: var(--md-sys-color-surface-container-high);
-  --color-m3-surface-container-highest: var(--md-sys-color-surface-container-highest);
+  --font-sans: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", monospace;
+}
 
-  --color-m3-inverse-surface: var(--md-sys-color-inverse-surface);
-  --color-m3-inverse-on-surface: var(--md-sys-color-inverse-on-surface);
-  --color-m3-inverse-primary: var(--md-sys-color-inverse-primary);
-
-  --radius-m3-xs: var(--md-shape-xs);
-  --radius-m3-sm: var(--md-shape-sm);
-  --radius-m3-md: var(--md-shape-md);
-  --radius-m3-lg: var(--md-shape-lg);
-  --radius-m3-xl: var(--md-shape-xl);
-  --radius-m3-full: var(--md-shape-full);
-
-  --font-sans: "Plus Jakarta Sans", "Google Sans", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
+  background-color: var(--ed-bg);
+  color: var(--ed-text);
   font-family: var(--font-sans);
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  transition: background-color 0.25s cubic-bezier(0.2, 0, 0, 1), color 0.25s cubic-bezier(0.2, 0, 0, 1);
+  transition: background-color 0.24s var(--m3-ease-spring), color 0.24s var(--m3-ease-spring);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Material 3 State Layer Effect */
-.m3-state-layer {
-  position: relative;
-  overflow: hidden;
+/* Material 3 Expressive Pill Button (morphs pill -> squircle on active press) */
+.m3-btn-expressive {
+  border-radius: 9999px;
+  transition:
+    border-radius 0.22s var(--m3-ease-spring),
+    background-color 0.2s var(--m3-ease-spring),
+    border-color 0.2s var(--m3-ease-spring),
+    color 0.2s var(--m3-ease-spring),
+    transform 0.2s var(--m3-ease-spring),
+    opacity 0.2s var(--m3-ease-spring);
 }
 
-.m3-state-layer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: currentColor;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
-  border-radius: inherit;
+.m3-btn-expressive:active {
+  border-radius: 0.75rem;
+  transform: scale(0.98);
 }
 
-.m3-state-layer:hover::after {
-  opacity: var(--md-sys-state-hover-opacity);
+/* Subtle architectural dot matrix background for diagrams */
+.ed-diagram-surface {
+  background-color: var(--ed-surface-subtle);
+  background-image: radial-gradient(var(--ed-border-strong) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
-.m3-state-layer:focus-visible::after {
-  opacity: var(--md-sys-state-focus-opacity);
+/* Animated SVG flow connector */
+@keyframes ed-flow-pulse {
+  to {
+    stroke-dashoffset: -24;
+  }
 }
 
-.m3-state-layer:active::after {
-  opacity: var(--md-sys-state-pressed-opacity);
+.ed-flow-line {
+  stroke-dasharray: 4 4;
+  animation: ed-flow-pulse 1.6s linear infinite;
+}
+
+/* Native <details> reset & smooth M3 + editorial row behavior */
+details.ed-project-row > summary {
+  list-style: none;
+}
+
+details.ed-project-row > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.ed-project-row[open] .ed-row-chevron {
+  transform: rotate(90deg);
+  color: var(--ed-accent);
+  background-color: var(--ed-accent-soft);
+  border-color: var(--ed-accent-border);
+}
+
+@keyframes ed-expand-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+details.ed-project-row[open] .ed-row-body {
+  animation: ed-expand-fade 0.24s var(--m3-ease-spring);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--md-sys-color-surface-container-low);
+  background: var(--ed-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--md-sys-color-outline-variant);
+  background: var(--ed-border-strong);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--md-sys-color-outline);
+  background: var(--ed-text-muted);
 }

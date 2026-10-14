@@ -1,0 +1,121 @@
+---
+import type { ProjectItem } from "../../data/projects";
+import type { GitHubRepoMeta } from "../../lib/github";
+import ArchitectureDiagram from "./ArchitectureDiagram.astro";
+
+interface Props {
+  project: ProjectItem;
+  ghMeta?: GitHubRepoMeta;
+}
+
+const { project, ghMeta } = Astro.props;
+const primaryLang = ghMeta?.language ?? project.techStack[0] ?? "Python";
+---
+
+<article
+  id={project.id}
+  class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface transition-colors hover:border-ed-border-strong"
+>
+  <!-- Top Metadata & Title Bar -->
+  <div class="p-5 sm:p-6 border-b border-ed-border flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+    <div class="space-y-2 max-w-2xl">
+      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+        <span class="rounded-full px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-semibold">
+          FLAGSHIP {project.index}
+        </span>
+        <span class="text-ed-text-muted">//</span>
+        <span class="text-ed-text-secondary font-medium">
+          {project.category}
+        </span>
+        <span class="text-ed-text-muted hidden sm:inline">&bull;</span>
+        <span class="text-ed-text-muted hidden sm:inline">
+          {project.repoSlug}
+        </span>
+      </div>
+
+      <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ed-text">
+        {project.title}
+      </h3>
+
+      <p class="text-sm text-ed-text-secondary leading-relaxed">
+        {project.tagline}
+      </p>
+    </div>
+
+    <!-- Stack Pills & Repository Action -->
+    <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3 shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="rounded-full inline-flex items-center gap-1.5 px-2.5 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-[11px] text-ed-text-secondary">
+          <span class="w-1.5 h-1.5 rounded-full bg-ed-accent"></span>
+          <span>{primaryLang}</span>
+        </span>
+
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-text bg-ed-text text-ed-bg font-mono text-xs font-medium hover:opacity-90"
+        >
+          <span>View Source</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="flex flex-wrap lg:justify-end gap-1.5">
+        {project.techStack.map((tech) => (
+          <span class="rounded-lg font-mono text-[11px] px-2 py-0.5 border border-ed-border bg-ed-surface-subtle/60 text-ed-text-secondary">
+            {tech}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Architecture Diagram -->
+  {project.architectureFlow && (
+    <div class="p-4 sm:p-6 border-b border-ed-border bg-ed-bg/50">
+      <ArchitectureDiagram
+        diagramId={`arch-${project.id}`}
+        flow={project.architectureFlow}
+      />
+    </div>
+  )}
+
+  <!-- Editorial 3-Column Breakdown -->
+  <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-ed-border">
+    <!-- Column 1: Why I Built This -->
+    <div class="p-5 sm:p-6 space-y-2">
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+        01 // Problem & Motivation
+      </h4>
+      <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
+        {project.whyIBuiltThis}
+      </p>
+    </div>
+
+    <!-- Column 2: How It Works -->
+    <div class="p-5 sm:p-6 space-y-2">
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+        02 // System Mechanics
+      </h4>
+      <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
+        {project.howItWorks}
+      </p>
+    </div>
+
+    <!-- Column 3: Technical Highlights -->
+    <div class="p-5 sm:p-6 space-y-2 bg-ed-surface-subtle/30">
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-accent">
+        03 // Engineering Highlights
+      </h4>
+      <ul class="space-y-1.5">
+        {project.keyHighlights.map((highlight) => (
+          <li class="flex items-start gap-2 text-xs text-ed-text leading-relaxed">
+            <span class="font-mono text-ed-status font-bold shrink-0">+</span>
+            <span>{highlight}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</article>
