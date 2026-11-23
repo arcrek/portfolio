@@ -103,8 +103,8 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
 
       {isClosedSource ? (
         <span
-          aria-label="Closed source — repository not public"
-          class="rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-muted font-mono text-xs font-medium select-none"
+          title="Closed source — repository not public"
+          class="rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-secondary font-mono text-xs font-medium select-none"
         >
           <svg
             aria-hidden="true"
@@ -119,7 +119,7 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
             <rect x="3" y="7" width="10" height="7" rx="1.5" />
             <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
           </svg>
-          <span>Closed Source</span>
+          <span>Closed Source<span class="sr-only"> — repository not public</span></span>
         </span>
       ) : (
         <a
