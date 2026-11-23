@@ -6,7 +6,9 @@ import { CURATED_PROJECTS, PROFILE_INFO } from "../data/projects";
 import { fetchAllCuratedRepos } from "../lib/github";
 
 // Build-time GitHub data hydration
-const repoSlugs = CURATED_PROJECTS.map((p) => p.repoSlug);
+const repoSlugs = CURATED_PROJECTS.map((p) => p.repoSlug).filter(
+  (slug): slug is string => Boolean(slug)
+);
 const githubMetaMap = await fetchAllCuratedRepos(repoSlugs);
 
 const flagshipProjects = CURATED_PROJECTS.filter((p) => p.tier === "flagship");
@@ -198,7 +200,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
       {flagshipProjects.map((project) => (
         <FlagshipCard
           project={project}
-          ghMeta={githubMetaMap[project.repoSlug]}
+          ghMeta={project.repoSlug ? githubMetaMap[project.repoSlug] : undefined}
         />
       ))}
     </div>
@@ -234,7 +236,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
       {indexProjects.map((project) => (
         <ProjectRow
           project={project}
-          ghMeta={githubMetaMap[project.repoSlug]}
+          ghMeta={project.repoSlug ? githubMetaMap[project.repoSlug] : undefined}
         />
       ))}
     </div>

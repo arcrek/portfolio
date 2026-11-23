@@ -16,23 +16,85 @@ export interface ProjectItem {
   id: string;
   index: string;
   tier: "flagship" | "index";
-  repoSlug: string;
+  repoSlug?: string;
   title: string;
   tagline: string;
   category: string;
   featured: boolean;
+  status?: "production" | "in-development";
+  sourceVisibility?: "open" | "closed";
   techStack: string[];
   whyIBuiltThis: string;
   howItWorks: string;
   keyHighlights: string[];
-  githubUrl: string;
+  githubUrl?: string;
   architectureFlow?: ArchitectureFlow;
 }
 
 export const CURATED_PROJECTS: ProjectItem[] = [
   {
-    id: "tmail",
+    id: "verikey",
     index: "01",
+    tier: "flagship",
+    title: "VeriKey",
+    tagline: "A multifunction ESP32-S3 hardware security key supporting FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA, paired with a zero-backend browser Web Manager.",
+    category: "Hardware Security & Embedded",
+    featured: true,
+    status: "in-development",
+    sourceVisibility: "closed",
+    techStack: ["C", "ESP-IDF", "ESP32-S3", "FIDO2 / CTAP2", "OpenPGP / PIV", "WebUSB", "React / TypeScript"],
+    whyIBuiltThis: "Commercial hardware security keys are typically proprietary black boxes tied to bulky desktop utilities. I wanted a transparent, multifunction hardware token with a zero-install browser manager.",
+    howItWorks: "ESP32-S3 firmware exposes a USB Composite device (CTAPHID, CCID, and WebUSB) that routes host requests into isolated cryptographic applets, paired with a zero-backend React/TypeScript Web Manager communicating directly over WebUSB. Currently in active development and closed source for now.",
+    keyHighlights: [
+      "Multifunction FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA over a single USB Composite interface",
+      "Zero-install, zero-backend WebUSB browser management UI built with React and TypeScript",
+      "Hardware-isolated key handling on ESP32-S3 — currently in active development and closed source"
+    ],
+    architectureFlow: {
+      title: "USB Composite Token & Zero-Backend WebUSB Pipeline",
+      summary: "Click or hover any stage to inspect how host security requests and WebUSB management flow through the device.",
+      nodes: [
+        {
+          id: "host-browser",
+          step: "01",
+          label: "Host & Browser",
+          protocol: "WebAuthn / GPG",
+          detail: "Initiates passkey authentication, GPG signing, smart-card operations, or management commands from standard OS and browser clients."
+        },
+        {
+          id: "usb-composite",
+          step: "02",
+          label: "USB Composite",
+          protocol: "CTAPHID / CCID",
+          detail: "Exposes concurrent CTAPHID, CCID smart-card, and WebUSB endpoints on the ESP32-S3 so browsers and native tools talk to one physical key."
+        },
+        {
+          id: "security-applets",
+          step: "03",
+          label: "Security Applets",
+          protocol: "FIDO2 / PIV",
+          detail: "Dispatches incoming protocol frames into isolated FIDO2, OpenPGP, PIV, and OATH applet handlers with per-applet PIN and touch policies."
+        },
+        {
+          id: "key-envelope",
+          step: "04",
+          label: "Key Envelope",
+          protocol: "HW Isolation",
+          detail: "Protects private credentials inside hardware-isolated key storage so signing operations execute on-device without exposing raw secret material."
+        },
+        {
+          id: "web-manager",
+          step: "05",
+          label: "Web Manager",
+          protocol: "WebUSB / M3",
+          detail: "Provides a zero-backend React and TypeScript browser interface for configuring applets, managing OATH codes, and inspecting device status directly over WebUSB."
+        }
+      ]
+    }
+  },
+  {
+    id: "tmail",
+    index: "02",
     tier: "flagship",
     repoSlug: "arcrek/tmail",
     title: "TMail",
@@ -92,7 +154,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "TELEGRAM-ORDER-BOT",
-    index: "02",
+    index: "03",
     tier: "flagship",
     repoSlug: "arcrek/TELEGRAM-ORDER-BOT",
     title: "Telegram Order Bot",
@@ -152,7 +214,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "xray-vless-ws-go",
-    index: "03",
+    index: "04",
     tier: "index",
     repoSlug: "arcrek/xray-vless-ws-go",
     title: "Xray VLESS Go",
@@ -171,7 +233,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "outlook-graph-module",
-    index: "04",
+    index: "05",
     tier: "index",
     repoSlug: "arcrek/outlook-graph-module",
     title: "Outlook Graph Module",
@@ -190,7 +252,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "canva-automation",
-    index: "05",
+    index: "06",
     tier: "index",
     repoSlug: "arcrek/canva-automation",
     title: "Canva Automation Suite",
@@ -209,7 +271,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "VMS",
-    index: "06",
+    index: "07",
     tier: "index",
     repoSlug: "arcrek/VMS",
     title: "VMS (Visitor Management System)",
@@ -228,7 +290,7 @@ export const CURATED_PROJECTS: ProjectItem[] = [
   },
   {
     id: "price_board",
-    index: "07",
+    index: "08",
     tier: "index",
     repoSlug: "arcrek/price_board",
     title: "price_board",
