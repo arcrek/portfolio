@@ -10,12 +10,14 @@ const { diagramId, flow } = Astro.props;
 const nodes = flow.nodes;
 const firstNode = nodes[0];
 
-// Compute horizontal SVG coordinates for up to 5 pipeline stages (viewBox 0 0 900 116)
-const nodeWidth = 148;
-const nodeHeight = 68;
-const gap = 30;
+// Compute horizontal SVG coordinates for 5 pipeline stages (viewBox 0 0 1000 124)
+const viewBoxWidth = 1000;
+const viewBoxHeight = 124;
+const nodeWidth = 172;
+const nodeHeight = 74;
+const gap = 26;
 const startX = 18;
-const startY = 24;
+const startY = 25;
 ---
 
 <div
@@ -25,7 +27,7 @@ const startY = 24;
   <!-- Diagram Header Bar -->
   <div class="px-4 py-2.5 border-b border-ed-border bg-ed-surface-subtle/60 flex flex-wrap items-center justify-between gap-2">
     <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-ed-accent"></span>
+      <span class="w-2 h-2 rounded-full bg-ed-accent shrink-0"></span>
       <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text">
         {flow.title}
       </span>
@@ -38,11 +40,11 @@ const startY = 24;
   <!-- Interactive SVG Canvas -->
   <div class="ed-diagram-surface px-3 py-4 overflow-x-auto">
     <svg
-      viewBox="0 0 900 116"
-      width="900"
-      height="116"
-      class="w-full min-w-[680px] h-auto block select-none"
-      role="img"
+      viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+      width={viewBoxWidth}
+      height={viewBoxHeight}
+      class="w-full min-w-[740px] h-auto block select-none"
+      role="group"
       aria-label={flow.title}
     >
       <defs>
@@ -102,7 +104,7 @@ const startY = 24;
             aria-label={`Stage ${node.step}: ${node.label} (${node.protocol})`}
             data-node-x={x + nodeWidth / 2}
           >
-            <!-- Node Box -->
+            <!-- Opaque Node Box so dot matrix never bleeds through -->
             <rect
               class="ed-node-rect transition-colors duration-150"
               x={x}
@@ -110,7 +112,7 @@ const startY = 24;
               width={nodeWidth}
               height={nodeHeight}
               rx="12"
-              fill={isFirst ? "var(--ed-accent-soft)" : "var(--ed-surface)"}
+              fill={isFirst ? "var(--ed-accent-surface)" : "var(--ed-surface)"}
               stroke={isFirst ? "var(--ed-accent)" : "var(--ed-border-strong)"}
               stroke-width={isFirst ? "1.75" : "1"}
             />
@@ -118,7 +120,7 @@ const startY = 24;
             <!-- Step Number Badge -->
             <text
               x={x + 12}
-              y={y + 19}
+              y={y + 20}
               fill="var(--ed-accent)"
               font-family="var(--font-mono)"
               font-size="10"
@@ -130,7 +132,7 @@ const startY = 24;
             <!-- Protocol Tag -->
             <text
               x={x + nodeWidth - 12}
-              y={y + 19}
+              y={y + 20}
               text-anchor="end"
               fill="var(--ed-text-muted)"
               font-family="var(--font-mono)"
@@ -142,9 +144,9 @@ const startY = 24;
             <!-- Divider Line inside Node -->
             <line
               x1={x + 12}
-              y1={y + 27}
+              y1={y + 29}
               x2={x + nodeWidth - 12}
-              y2={y + 27}
+              y2={y + 29}
               stroke="var(--ed-border)"
               stroke-width="1"
             />
@@ -152,10 +154,10 @@ const startY = 24;
             <!-- Node Primary Title -->
             <text
               x={x + 12}
-              y={y + 49}
+              y={y + 53}
               fill="var(--ed-text)"
               font-family="var(--font-mono)"
-              font-size="12"
+              font-size="11.5"
               font-weight="600"
             >
               {node.label}
@@ -172,18 +174,18 @@ const startY = 24;
       <!-- Controls & Metadata Header: Stage Badge on Left, Quick Step Pills on Right -->
       <div class="flex flex-wrap items-center justify-between gap-2 min-w-0">
         <span
-          class="ed-inspector-badge rounded-full font-mono text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border whitespace-nowrap shrink-0 max-w-full truncate"
+          class="ed-inspector-badge rounded-full font-mono text-[11px] font-semibold px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border whitespace-nowrap shrink-0 max-w-full truncate"
           data-inspector-badge
         >
           STAGE {firstNode.step} · {firstNode.protocol}
         </span>
 
-        <!-- Quick Step Selector Pills -->
-        <div class="flex items-center gap-1 shrink-0" role="group" aria-label="Stage selector">
+        <!-- Quick Step Selector Pills (28px+ touch target) -->
+        <div class="flex items-center gap-1.5 shrink-0" role="group" aria-label="Stage selector">
           {nodes.map((node, idx) => (
             <button
               type="button"
-              class={`ed-step-pill m3-btn-expressive rounded-full font-mono text-[9.5px] sm:text-[10.5px] min-w-[22px] sm:min-w-[26px] h-5.5 sm:h-6 px-1 sm:px-1.5 border inline-flex items-center justify-center cursor-pointer transition-colors ${
+              class={`ed-step-pill m3-btn-expressive rounded-full font-mono text-[11px] min-w-[28px] h-7 px-1.5 border inline-flex items-center justify-center cursor-pointer transition-colors ${
                 idx === 0
                   ? "border-ed-accent bg-ed-accent-soft text-ed-accent font-semibold"
                   : "border-ed-border bg-ed-surface-subtle/60 text-ed-text-muted hover:text-ed-text hover:bg-ed-surface-muted/60"
@@ -214,7 +216,7 @@ const startY = 24;
               data-inspector-panel={idx}
               aria-hidden={isFirst ? "false" : "true"}
             >
-              <p class="text-xs leading-relaxed text-ed-text-secondary min-w-0 break-words">
+              <p class="text-xs sm:text-[13px] leading-relaxed text-ed-text-secondary min-w-0 break-words">
                 <span class="font-mono font-semibold text-ed-text mr-1.5">
                   {node.label}:
                 </span>
@@ -243,20 +245,20 @@ const startY = 24;
   }
 </style>
 
-<script is:inline>
+<script>
   function initArchitectureDiagrams() {
-    const roots = document.querySelectorAll("[data-diagram-root]");
+    const roots = document.querySelectorAll<HTMLElement>("[data-diagram-root]");
     roots.forEach((root) => {
       if (root.dataset.bound === "true") return;
       root.dataset.bound = "true";
 
-      const surface = root.querySelector(".ed-diagram-surface");
-      const nodes = root.querySelectorAll(".ed-arch-node");
-      const pills = root.querySelectorAll("[data-step-trigger]");
-      const badge = root.querySelector("[data-inspector-badge]");
-      const panels = root.querySelectorAll("[data-inspector-panel]");
+      const surface = root.querySelector<HTMLElement>(".ed-diagram-surface");
+      const nodes = root.querySelectorAll<SVGGElement>(".ed-arch-node");
+      const pills = root.querySelectorAll<HTMLButtonElement>("[data-step-trigger]");
+      const badge = root.querySelector<HTMLElement>("[data-inspector-badge]");
+      const panels = root.querySelectorAll<HTMLElement>("[data-inspector-panel]");
 
-      function activateIndex(activeIndex, options = {}) {
+      function activateIndex(activeIndex: number, options: { scroll?: boolean } = {}) {
         nodes.forEach((node, idx) => {
           const rect = node.querySelector(".ed-node-rect");
           const isActive = idx === activeIndex;
@@ -264,7 +266,7 @@ const startY = 24;
           if (rect) {
             rect.setAttribute(
               "fill",
-              isActive ? "var(--ed-accent-soft)" : "var(--ed-surface)"
+              isActive ? "var(--ed-accent-surface)" : "var(--ed-surface)"
             );
             rect.setAttribute(
               "stroke",
@@ -310,8 +312,8 @@ const startY = 24;
             const nodeCenterX = parseFloat(activeNode.dataset.nodeX || "0");
             if (nodeCenterX > 0) {
               const svgEl = surface.querySelector("svg");
-              const svgWidth = svgEl ? (svgEl.clientWidth || svgEl.getBoundingClientRect().width) : 900;
-              const scale = svgWidth / 900;
+              const svgWidth = svgEl ? (svgEl.clientWidth || svgEl.getBoundingClientRect().width) : 1000;
+              const scale = svgWidth / 1000;
               const targetLeft = nodeCenterX * scale - surface.clientWidth / 2;
               const isReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
               surface.scrollTo({
@@ -341,8 +343,5 @@ const startY = 24;
   }
 
   initArchitectureDiagrams();
-  if (!window.__edArchDiagramBound) {
-    window.__edArchDiagramBound = true;
-    document.addEventListener("astro:page-load", initArchitectureDiagrams);
-  }
+  document.addEventListener("astro:page-load", initArchitectureDiagrams);
 </script>

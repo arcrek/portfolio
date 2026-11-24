@@ -1,31 +1,41 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ArchitectureDiagram from "../components/editorial/ArchitectureDiagram.astro";
+import Icon from "../components/editorial/Icon.astro";
 import { PROFILE_INFO } from "../data/projects";
+
+interface Props {
+  canonicalPath?: string;
+  noindex?: boolean;
+}
+
+const { canonicalPath = "/lab", noindex = false } = Astro.props;
 ---
 
 <Layout
   currentRoute="/lab"
-  title={`02 // Lab [Hobby] — ${PROFILE_INFO.name}`}
-  description="Self-hosted homelab cluster topology, bare-metal virtualization, and late-night container notes."
+  canonicalPath={canonicalPath}
+  noindex={noindex}
+  title={`Homelab — ${PROFILE_INFO.name}`}
+  description="Self-hosted homelab network topology, Proxmox VE virtualization, TrueNAS storage, and Docker services."
 >
-  <!-- 01 // HOBBY HEADER -->
+  <!-- Homelab Intro -->
   <section class="mb-10">
     <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface p-6 sm:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div class="space-y-3 max-w-2xl">
-        <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-xs text-ed-text-secondary">
-          <span class="w-2 h-2 rounded-full bg-ed-accent"></span>
-          <span>02 // LAB [SIDE HOBBY]</span>
-          <span class="text-ed-border-strong">&bull;</span>
-          <span>{PROFILE_INFO.stats.homelabContainers} Active Containers</span>
+        <div class="inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl sm:rounded-full px-3 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-xs text-ed-text-secondary">
+          <span class="w-2 h-2 rounded-full bg-ed-accent shrink-0"></span>
+          <span>Homelab</span>
+          <span class="text-ed-border-strong">&middot;</span>
+          <span>{PROFILE_INFO.stats.homelabContainers} running containers</span>
         </div>
 
         <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-ed-text leading-tight">
-          Self-hosting & bare-metal tinkering.
+          Self-hosting & home server setup.
         </h1>
 
         <p class="text-sm sm:text-base text-ed-text-secondary leading-relaxed">
-          Outside of software coursework and backend projects, I maintain a home cluster running Proxmox VE, TrueNAS, and Docker to test network protocols, mail daemons, and reverse proxies on real hardware.
+          Outside of coursework and backend projects, I run a small home server with Proxmox VE, TrueNAS, and Docker to test reverse proxies, DNS, and mail setups on my own hardware.
         </p>
       </div>
 
@@ -33,19 +43,20 @@ import { PROFILE_INFO } from "../data/projects";
         href={import.meta.env.BASE_URL}
         class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70 hover:border-ed-border-strong shrink-0 self-start md:self-end"
       >
-        <span>← Back to 01 // Engineering Index</span>
+        <Icon name="arrow-left" class="w-3.5 h-3.5" />
+        <span>Back to Projects</span>
       </a>
     </div>
   </section>
 
-  <!-- 02 // INTERACTIVE HOMELAB TOPOLOGY -->
+  <!-- Network Topology -->
   <section class="mb-12">
     <div class="mb-4">
       <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-        Cluster Routing & Storage
+        Topology
       </div>
       <h2 class="text-xl sm:text-2xl font-bold text-ed-text mt-0.5">
-        Network & Hypervisor Topology
+        How traffic moves through the lab
       </h2>
     </div>
 
@@ -55,14 +66,14 @@ import { PROFILE_INFO } from "../data/projects";
     />
   </section>
 
-  <!-- 03 // 6-NODE SERVICE SPECIFICATION -->
+  <!-- Running Services -->
   <section class="mb-12">
     <div class="mb-4">
       <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-        Active Node Stack
+        Running Services
       </div>
       <h2 class="text-xl sm:text-2xl font-bold text-ed-text mt-0.5">
-        What Runs on the Metal
+        What runs on the hardware
       </h2>
     </div>
 
@@ -71,8 +82,8 @@ import { PROFILE_INFO } from "../data/projects";
         <div class="p-5 bg-ed-surface flex flex-col justify-between gap-3">
           <div class="space-y-1.5">
             <div class="flex items-center justify-between gap-2 font-mono text-[11px]">
-              <span class="text-ed-accent font-semibold">NODE 0{idx + 1}</span>
-              <span class="rounded-full px-2 py-0.5 bg-ed-surface-subtle border border-ed-border text-ed-text-muted text-[10px]">
+              <span class="text-ed-accent font-semibold">0{idx + 1}</span>
+              <span class="rounded-full px-2 py-0.5 bg-ed-surface-subtle border border-ed-border text-ed-text-muted text-[11px]">
                 {item.role}
               </span>
             </div>
@@ -88,20 +99,20 @@ import { PROFILE_INFO } from "../data/projects";
     </div>
   </section>
 
-  <!-- 04 // LATE-NIGHT WORKFLOW -->
+  <!-- Workflow -->
   <section>
     <div class="mb-4">
       <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-        Side-Project Lifecycle
+        Workflow
       </div>
       <h2 class="text-xl sm:text-2xl font-bold text-ed-text mt-0.5">
-        How 2 a.m. Experiments Usually Go
+        How side projects usually go
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface divide-y sm:divide-y-0 sm:divide-x divide-ed-border">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-border gap-px">
       {PROFILE_INFO.workflow.map((item) => (
-        <div class="p-5 space-y-2">
+        <div class="p-5 bg-ed-surface space-y-2">
           <div class="inline-flex items-center rounded-full px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-mono text-[11px] font-bold">
             STEP {item.step}
           </div>

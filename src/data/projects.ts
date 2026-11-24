@@ -37,57 +37,65 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     index: "01",
     tier: "flagship",
     title: "VeriKey",
-    tagline: "A multifunction ESP32-S3 hardware security key supporting FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA, paired with a zero-backend browser Web Manager.",
+    tagline:
+      "An ESP32-S3 hardware security key supporting FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA, with a browser Web Manager over WebUSB.",
     category: "Hardware Security & Embedded",
     featured: true,
     status: "in-development",
     sourceVisibility: "closed",
     techStack: ["C", "ESP-IDF", "ESP32-S3", "FIDO2 / CTAP2", "OpenPGP / PIV", "WebUSB", "React / TypeScript"],
-    whyIBuiltThis: "Commercial hardware security keys are typically proprietary black boxes tied to bulky desktop utilities. I wanted a transparent, multifunction hardware token with a zero-install browser manager.",
-    howItWorks: "ESP32-S3 firmware exposes a USB Composite device (CTAPHID, CCID, and WebUSB) that routes host requests into isolated cryptographic applets, paired with a zero-backend React/TypeScript Web Manager communicating directly over WebUSB. Currently in active development and closed source for now.",
+    whyIBuiltThis:
+      "Commercial hardware security keys are closed black boxes tied to heavy desktop tools. I wanted to build my own multifunction token and manage it straight from the browser with nothing to install.",
+    howItWorks:
+      "ESP32-S3 firmware exposes a USB Composite device (CTAPHID, CCID, and WebUSB) that routes requests into separate cryptographic applets. A static React/TypeScript web app talks directly to the device over WebUSB—no backend required. Currently in active development and closed source.",
     keyHighlights: [
-      "Multifunction FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA over a single USB Composite interface",
-      "Zero-install, zero-backend WebUSB browser management UI built with React and TypeScript",
-      "Hardware-isolated key handling on ESP32-S3 — currently in active development and closed source"
+      "FIDO2/WebAuthn, OpenPGP, PIV, and OATH 2FA on a single USB Composite device",
+      "Browser-based WebUSB manager built with React and TypeScript, with no server or desktop installer",
+      "Private keys stay isolated on the ESP32-S3 for on-device signing"
     ],
     architectureFlow: {
-      title: "USB Composite Token & Zero-Backend WebUSB Pipeline",
-      summary: "Click or hover any stage to inspect how host security requests and WebUSB management flow through the device.",
+      title: "USB Composite Token & WebUSB Flow",
+      summary: "Select a stage to see how requests move from the host to the device.",
       nodes: [
         {
           id: "host-browser",
           step: "01",
           label: "Host & Browser",
           protocol: "WebAuthn / GPG",
-          detail: "Initiates passkey authentication, GPG signing, smart-card operations, or management commands from standard OS and browser clients."
+          detail:
+            "Starts passkey sign-in, GPG signing, smart-card operations, or configuration requests from standard OS and browser clients."
         },
         {
           id: "usb-composite",
           step: "02",
           label: "USB Composite",
           protocol: "CTAPHID / CCID",
-          detail: "Exposes concurrent CTAPHID, CCID smart-card, and WebUSB endpoints on the ESP32-S3 so browsers and native tools talk to one physical key."
+          detail:
+            "Exposes CTAPHID, CCID smart-card, and WebUSB interfaces together on the ESP32-S3 so browsers and native tools can share one key."
         },
         {
           id: "security-applets",
           step: "03",
           label: "Security Applets",
           protocol: "FIDO2 / PIV",
-          detail: "Dispatches incoming protocol frames into isolated FIDO2, OpenPGP, PIV, and OATH applet handlers with per-applet PIN and touch policies."
+          detail:
+            "Routes incoming frames to isolated FIDO2, OpenPGP, PIV, and OATH handlers with per-applet PIN and touch checks."
         },
         {
           id: "key-envelope",
           step: "04",
-          label: "Key Envelope",
-          protocol: "HW Isolation",
-          detail: "Protects private credentials inside hardware-isolated key storage so signing operations execute on-device without exposing raw secret material."
+          label: "Key Storage",
+          protocol: "On-Device",
+          detail:
+            "Keeps private keys inside hardware-protected storage so signing happens on the chip without exposing raw secrets."
         },
         {
           id: "web-manager",
           step: "05",
           label: "Web Manager",
-          protocol: "WebUSB / M3",
-          detail: "Provides a zero-backend React and TypeScript browser interface for configuring applets, managing OATH codes, and inspecting device status directly over WebUSB."
+          protocol: "WebUSB",
+          detail:
+            "Static React and TypeScript interface for configuring applets, reading OATH codes, and checking device status directly over WebUSB."
         }
       ]
     }
@@ -98,56 +106,64 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "flagship",
     repoSlug: "arcrek/tmail",
     title: "TMail",
-    tagline: "A passwordless temporary-mail web app and API with automatic domain provisioning through Postfix and Stalwart JMAP.",
-    category: "Mail Protocols & Systems",
+    tagline:
+      "Self-hosted disposable email app and API with automatic domain setup, built on Postfix and Stalwart JMAP.",
+    category: "Mail & Backend",
     featured: true,
-    techStack: ["Python", "FastAPI", "Stalwart JMAP", "Postfix MTA", "Docker", "Redis"],
-    whyIBuiltThis: "I wanted a self-hosted disposable mail system for testing signups without paying monthly SaaS subscriptions or dealing with IMAP polling lag.",
-    howItWorks: "Wired incoming SMTP streams through Postfix into a Stalwart JMAP backend. Inbound messages push directly into Redis in-memory buffers with automatic TTL expiry, skipping disk clutter entirely.",
+    techStack: ["Python", "FastAPI", "Stalwart JMAP", "Postfix", "Docker", "Redis"],
+    whyIBuiltThis:
+      "I needed disposable inboxes for testing signups without paying for SaaS plans or waiting on slow IMAP polling.",
+    howItWorks:
+      "Inbound SMTP passes through Postfix into Stalwart JMAP. FastAPI listens for new-mail events, buffers parsed messages in Redis with short TTLs so nothing piles up on disk, and pushes updates to the browser over WebSockets.",
     keyHighlights: [
-      "Passwordless token sessions instead of database user accounts",
-      "Real-time email push over WebSockets using JMAP events",
-      "Automated domain DNS provisioning in isolated Docker containers"
+      "Token-based temporary sessions with no user accounts or passwords",
+      "Instant inbox updates over WebSockets backed by JMAP events",
+      "Automatic domain DNS setup running inside Docker containers"
     ],
     githubUrl: "https://github.com/arcrek/tmail",
     architectureFlow: {
-      title: "Zero-Disk Inbound Mail & JMAP Push Pipeline",
-      summary: "Click or hover any stage to inspect how inbound SMTP traffic becomes a real-time browser event.",
+      title: "Inbound Mail & JMAP Push Flow",
+      summary: "Select a stage to trace an incoming email from SMTP to the browser.",
       nodes: [
         {
           id: "smtp-ingress",
           step: "01",
           label: "Postfix MTA",
           protocol: "SMTP :25",
-          detail: "Accepts inbound mail across dynamically provisioned disposable domains, strips malformed headers, and pipes streams downstream without writing local mbox files."
+          detail:
+            "Receives mail for provisioned disposable domains, cleans malformed headers, and forwards streams without saving local mbox files."
         },
         {
           id: "stalwart-jmap",
           step: "02",
           label: "Stalwart JMAP",
           protocol: "LMTP / JMAP",
-          detail: "Indexes MIME structure and emits state-change events immediately upon receipt, replacing legacy IMAP polling loops with sub-second event dispatch."
+          detail:
+            "Parses MIME bodies and triggers JMAP state updates immediately on arrival instead of relying on periodic IMAP polling."
         },
         {
           id: "fastapi-core",
           step: "03",
           label: "FastAPI Worker",
           protocol: "AsyncIO",
-          detail: "Validates passwordless bearer tokens, scopes ephemeral mailbox namespaces, and coordinates JMAP webhook listeners with Redis buffers."
+          detail:
+            "Checks session tokens, isolates temporary inboxes, and bridges JMAP events into Redis and active client connections."
         },
         {
           id: "redis-ttl",
           step: "04",
-          label: "Redis TTL Buffer",
+          label: "Redis Buffer",
           protocol: "In-Memory TTL",
-          detail: "Stores parsed email payloads and attachments strictly in volatile memory with automatic key expiration so stale messages self-purge."
+          detail:
+            "Holds parsed messages and attachments in memory with automatic expiration so old mail cleans itself up."
         },
         {
           id: "ws-client",
           step: "05",
           label: "Client Push",
-          protocol: "WebSocket / REST",
-          detail: "Streams new message arrivals directly to connected browser sessions and headless API callers with zero page refresh."
+          protocol: "WS / REST",
+          detail:
+            "Pushes incoming messages to open browser tabs and API clients as soon as they land."
         }
       ]
     }
@@ -158,56 +174,64 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "flagship",
     repoSlug: "arcrek/TELEGRAM-ORDER-BOT",
     title: "Telegram Order Bot",
-    tagline: "A self-hosted Telegram storefront with PayOS QR payments, balance payments, automatic digital delivery, and a React admin dashboard.",
+    tagline:
+      "Self-hosted Telegram shop with PayOS VietQR payments, wallet balances, instant digital delivery, and a React admin panel.",
     category: "Bots & Payments",
     featured: true,
     techStack: ["Python", "aiogram", "PostgreSQL", "PayOS API", "Docker Compose", "React"],
-    whyIBuiltThis: "Digital asset selling usually involves manual bank screenshots and tedious manual verification. I wanted a 24/7 autonomous storefront that handles order fulfillment in seconds.",
-    howItWorks: "Listens for user commands in Telegram, generates real-time VietQR payment codes via PayOS, verifies incoming payment webhooks idempotently, and delivers digital files instantly with PostgreSQL transactional safety.",
+    whyIBuiltThis:
+      "Selling digital items usually turns into checking bank transfer screenshots by hand. I wanted a bot that verifies payments and delivers orders automatically, day or night.",
+    howItWorks:
+      "Customers browse and order inside Telegram. The bot creates a dynamic VietQR code through PayOS, checks signed webhooks for duplicate deliveries, locks stock rows in PostgreSQL, and sends the purchased item immediately.",
     keyHighlights: [
-      "Idempotent webhook processing to prevent duplicate digital delivery",
-      "PostgreSQL row-level locking for inventory management",
-      "Full Vietnamese and English internationalization (i18n)"
+      "Idempotent webhook handling so retried callbacks never deliver an order twice",
+      "PostgreSQL row locking to prevent overselling limited digital stock",
+      "Vietnamese and English interface with a React admin dashboard"
     ],
     githubUrl: "https://github.com/arcrek/TELEGRAM-ORDER-BOT",
     architectureFlow: {
-      title: "Transactional VietQR Payment & Fulfillment Pipeline",
-      summary: "Click or hover any stage to inspect how orders lock inventory and fulfill idempotently.",
+      title: "VietQR Payment & Order Fulfillment Flow",
+      summary: "Select a stage to see how payments are verified and fulfilled safely.",
       nodes: [
         {
           id: "tg-bot",
           step: "01",
           label: "aiogram Bot",
           protocol: "Telegram API",
-          detail: "Handles bilingual (VI/EN) storefront menus, cart state, and order initiation directly inside Telegram chat threads."
+          detail:
+            "Runs the bilingual (VI/EN) catalog, cart, wallet balance, and checkout steps directly inside Telegram."
         },
         {
           id: "payos-qr",
           step: "02",
           label: "PayOS VietQR",
           protocol: "Signed REST",
-          detail: "Generates unique dynamic VietQR payment intents tied to the order ID with strict expiration windows."
+          detail:
+            "Generates a per-order VietQR payment link with an expiry window tied directly to the order ID."
         },
         {
           id: "webhook-guard",
           step: "03",
-          label: "Webhook Verifier",
+          label: "Webhook Check",
           protocol: "HMAC-SHA256",
-          detail: "Validates incoming PayOS settlement callbacks and enforces idempotency keys so replayed webhooks never trigger double fulfillment."
+          detail:
+            "Verifies PayOS webhook signatures and checks idempotency keys so replayed requests cannot double-fulfill an order."
         },
         {
           id: "pg-lock",
           step: "04",
           label: "PostgreSQL Lock",
-          protocol: "SELECT FOR UPDATE",
-          detail: "Acquires row-level locks on digital stock items, decrements inventory atomically, and records ledger entries in a single ACID transaction."
+          protocol: "Row Lock (SQL)",
+          detail:
+            "Uses SELECT FOR UPDATE to claim stock, decrement inventory, and write the order ledger inside one transaction."
         },
         {
           id: "auto-delivery",
           step: "05",
-          label: "Instant Fulfillment",
-          protocol: "TG Dispatch + Admin UI",
-          detail: "Delivers credentials or files to the buyer in under two seconds while syncing real-time revenue telemetry to the React admin dashboard."
+          label: "Auto Delivery",
+          protocol: "TG + Admin UI",
+          detail:
+            "Sends files or credentials back to the buyer within seconds and updates sales records in the React admin panel."
         }
       ]
     }
@@ -218,16 +242,19 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "index",
     repoSlug: "arcrek/xray-vless-ws-go",
     title: "Xray VLESS Go",
-    tagline: "A Go proxy server on xray-core with graceful shutdown, health checks, systemd integration, and self-updating rollback.",
-    category: "Networking & Cloud",
+    tagline:
+      "Go wrapper for xray-core with health checks, systemd integration, graceful shutdown, and automatic rollback on bad updates.",
+    category: "Networking",
     featured: true,
     techStack: ["Go", "Xray Core", "systemd", "WebSocket", "Linux"],
-    whyIBuiltThis: "Managing network routing proxies manually on remote Linux boxes gets messy when updates crash the daemon or leave orphaned processes.",
-    howItWorks: "A lightweight Go service manager that handles process supervision, WebSocket handshakes, automated health probe telemetry, and clean graceful shutdowns.",
+    whyIBuiltThis:
+      "Updating proxy daemons by hand on remote Linux servers gets annoying fast when a bad config crashes the service or leaves stray processes behind.",
+    howItWorks:
+      "A small Go binary manages the xray-core process, checks tunnel health, handles graceful shutdown signals, and rolls back to the previous working version if an update fails startup checks.",
     keyHighlights: [
-      "Zero-downtime config reload and automated rollback on failure",
-      "Native Linux systemd unit file and daemon integration",
-      "Minimal memory footprint written in pure Go"
+      "Zero-downtime config reloads with automatic rollback on failure",
+      "Ships with a native Linux systemd service unit",
+      "Small memory footprint written in pure Go"
     ],
     githubUrl: "https://github.com/arcrek/xray-vless-ws-go"
   },
@@ -237,16 +264,19 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "index",
     repoSlug: "arcrek/outlook-graph-module",
     title: "Outlook Graph Module",
-    tagline: "A TypeScript/Python client for Microsoft Graph with OAuth2, retry/backoff, and 401/429 recovery baked in.",
+    tagline:
+      "TypeScript and Python Microsoft Graph client with OAuth2 refresh, backoff on rate limits, and OTP extraction.",
     category: "APIs & Tooling",
     featured: false,
-    techStack: ["TypeScript", "Python", "Microsoft Graph API", "OAuth2", "Regex"],
-    whyIBuiltThis: "Automated test flows frequently need to retrieve 2FA confirmation codes from Outlook mailboxes without a human sitting there waiting to click refresh.",
-    howItWorks: "Headless client that manages OAuth2 token lifecycles with transparent refresh and runs incoming emails through regex patterns to extract verification codes across multi-language layouts.",
+    techStack: ["TypeScript", "Python", "Microsoft Graph", "OAuth2", "Regex"],
+    whyIBuiltThis:
+      "Automated test scripts often need 2FA codes from Outlook mailboxes without someone manually opening a browser and hitting refresh.",
+    howItWorks:
+      "Handles OAuth2 token refresh automatically, retries throttled requests with exponential backoff, and extracts verification codes from incoming emails across multiple languages.",
     keyHighlights: [
-      "Automatic token refresh on 401 and exponential backoff on 429 throttling",
-      "Multi-language regex engine for localized OTP formats",
-      "Dual TypeScript and Python API support"
+      "Automatic token refresh on 401 and exponential backoff on 429 responses",
+      "Multi-language regex rules for localized OTP emails",
+      "Shared API design available in both TypeScript and Python"
     ],
     githubUrl: "https://github.com/arcrek/outlook-graph-module"
   },
@@ -256,16 +286,19 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "index",
     repoSlug: "arcrek/canva-automation",
     title: "Canva Automation Suite",
-    tagline: "Unofficial, fail-closed Canva browser automation for account checks, team sync, invites, role updates, and member removal.",
-    category: "Automation & Scripts",
+    tagline:
+      "Playwright automation for checking Canva accounts, syncing teams, sending invites, updating roles, and removing inactive seats.",
+    category: "Automation",
     featured: false,
-    techStack: ["Python", "Playwright", "AsyncIO", "Secure Keyring"],
-    whyIBuiltThis: "Manually managing team invites and revoking stale seats across multiple workspace accounts was eating up hours every week.",
-    howItWorks: "A fail-closed headless browser automation pipeline that verifies DOM state before each step, executes batch account operations, and dumps structured JSON logs.",
+    techStack: ["Python", "Playwright", "AsyncIO", "Keyring"],
+    whyIBuiltThis:
+      "Sending team invites and cleaning up unused seats across several workspaces by hand was taking hours every week.",
+    howItWorks:
+      "Drives headless Chromium with Playwright, checks expected page state before every action so it stops safely if the UI changes, and writes structured JSON run logs.",
     keyHighlights: [
-      "Fail-closed architecture that safely aborts on unexpected UI state",
-      "Headless persistent sessions with secure keyring credentials",
-      "Batch invitation and stale seat revocation workflows"
+      "Aborts safely instead of clicking blindly when the page DOM changes",
+      "Persistent headless sessions backed by the OS keyring",
+      "Batch invite, role change, and stale-seat cleanup workflows"
     ],
     githubUrl: "https://github.com/arcrek/canva-automation"
   },
@@ -275,16 +308,19 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     tier: "index",
     repoSlug: "arcrek/VMS",
     title: "VMS (Visitor Management System)",
-    tagline: "Enterprise Visitor Management System demo featuring badge issuance, guest check-in workflows, and security audit logs.",
-    category: "Enterprise Demo",
+    tagline:
+      "Visitor management web app with guest check-in, badge issuance, host alerts, and searchable entry logs.",
+    category: "Web App",
     featured: false,
-    techStack: ["JavaScript", "Node.js", "REST API", "Audit Logging"],
-    whyIBuiltThis: "Built to model structured physical-security check-in pipelines where front-desk badge issuance and host notifications require an immutable audit trail.",
-    howItWorks: "Tracks visitor lifecycle states from pre-registration through badge printing and check-out, recording timestamped security events at every transition.",
+    techStack: ["JavaScript", "Node.js", "REST API", "Audit Logs"],
+    whyIBuiltThis:
+      "Built as a practical model for front-desk check-in flows where receptionists and security staff need clear badge tracking and entry history.",
+    howItWorks:
+      "Tracks each guest from pre-registration through badge printing and check-out, logging timestamps and operator actions at each step.",
     keyHighlights: [
-      "Role-separated check-in and security operator views",
-      "Automated guest badge state tracking and expiration",
-      "Searchable compliance and entry/exit audit log"
+      "Separate views for front-desk check-in and security staff",
+      "Badge status tracking with automatic expiration",
+      "Searchable guest entry and exit log"
     ],
     githubUrl: "https://github.com/arcrek/VMS"
   },
@@ -293,17 +329,20 @@ export const CURATED_PROJECTS: ProjectItem[] = [
     index: "08",
     tier: "index",
     repoSlug: "arcrek/price_board",
-    title: "price_board",
-    tagline: "A clean, self-hosted dynamic board for product pricing tiers, currency conversion, and promotional badge highlights.",
-    category: "Self-Hosted Web",
+    title: "Price Board",
+    tagline:
+      "Lightweight self-hosted pricing page for product tiers, currency switching, and promo callouts.",
+    category: "Web App",
     featured: false,
     techStack: ["TypeScript", "Vite", "Tailwind CSS"],
-    whyIBuiltThis: "Static image price lists go out of date constantly; I needed a lightweight, self-hosted pricing display that updates tiers and currencies cleanly.",
-    howItWorks: "Renders structured catalog configuration into responsive pricing tables with instant currency toggling and promotional tier callouts.",
+    whyIBuiltThis:
+      "Image-based price lists go stale immediately. I wanted a simple page driven by a config file that updates prices and currencies cleanly.",
+    howItWorks:
+      "Reads a JSON catalog at build or runtime to render responsive pricing cards with currency toggling and optional promo badges.",
     keyHighlights: [
-      "Zero-database static/JSON configuration for instant deployment",
-      "Multi-currency formatting and promotional status badges",
-      "Responsive layout optimized for both desktop and mobile screens"
+      "Driven by static JSON configuration—no database needed",
+      "Currency switching and highlighted promo tiers",
+      "Responsive layout for both desktop and phone screens"
     ],
     githubUrl: "https://github.com/arcrek/price_board"
   }
@@ -313,7 +352,8 @@ export const PROFILE_INFO = {
   name: "Nguyen Dang Dat",
   handle: "arcrek",
   title: "ICT Student & Systems Builder",
-  tagline: "ICT student from Vietnam building self-hosted backends, network proxies, and fail-closed browser automations.",
+  tagline:
+    "ICT student in Vietnam building backend services, network tools, and self-hosted software—from mail servers and payment bots to embedded security keys.",
   location: "Vietnam",
   email: "dangdat14122006@gmail.com",
   githubUrl: "https://github.com/arcrek",
@@ -321,67 +361,96 @@ export const PROFILE_INFO = {
   stats: {
     publicRepos: "24+",
     homelabContainers: "20+",
-    status: "Available for Internships & Projects",
+    status: "Open to internships & projects",
     motto: "Works on my machine."
   },
   workflow: [
-    { step: "01", title: "Have a half-baked idea at 2 a.m." },
-    { step: "02", title: "Sketch the protocol and explain it to an AI." },
-    { step: "03", title: "Accept, edit, and debug until the daemon stays up." },
-    { step: "04", title: "Ship it to production and promise I'll document it later." }
+    { step: "01", title: "Get an itch to automate or self-host something annoying." },
+    { step: "02", title: "Sketch the data flow, protocol boundaries, and failure cases." },
+    { step: "03", title: "Build the smallest working daemon and test it on real hardware." },
+    { step: "04", title: "Put it behind Docker and Traefik, then clean up the docs." }
   ],
   homelabStack: [
-    { name: "Proxmox VE", role: "Bare-Metal Hypervisor", desc: "Hosts all isolated Linux VMs and LXC containers on local hardware." },
-    { name: "TrueNAS", role: "ZFS Storage Array", desc: "Network storage pool handling automated snapshots, backups, and media datasets." },
-    { name: "Traefik & Nginx", role: "Edge Reverse Proxy", desc: "Routes internal and public domain traffic with automated Let's Encrypt TLS termination." },
-    { name: "AdGuard Home", role: "Network DNS Sinkhole", desc: "Filters LAN DNS queries and blocks telemetry, ads, and malware domains network-wide." },
-    { name: "Portainer & Docker", role: "Container Runtime", desc: "Orchestrates 20+ self-hosted microservices, workers, and backing databases." },
-    { name: "Jellyfin", role: "Media Server", desc: "Self-hosted streaming server because paying for subscriptions while running a homelab is a cry for help." }
+    {
+      name: "Proxmox VE",
+      role: "Hypervisor",
+      desc: "Runs isolated Linux VMs and LXC containers on local hardware."
+    },
+    {
+      name: "TrueNAS",
+      role: "ZFS Storage",
+      desc: "Network storage pool for scheduled snapshots, backups, and media datasets."
+    },
+    {
+      name: "Traefik & Nginx",
+      role: "Reverse Proxy",
+      desc: "Routes internal and public domains with automatic Let's Encrypt TLS."
+    },
+    {
+      name: "AdGuard Home",
+      role: "LAN DNS",
+      desc: "Resolves local domains and blocks ads, trackers, and malware network-wide."
+    },
+    {
+      name: "Portainer & Docker",
+      role: "Containers",
+      desc: "Runs 20+ self-hosted services, bots, and databases with restart policies."
+    },
+    {
+      name: "Jellyfin",
+      role: "Media Server",
+      desc: "Self-hosted media streaming—mostly to justify keeping the storage box running."
+    }
   ],
   homelabTopology: {
-    title: "Self-Hosted Homelab Network Topology",
-    summary: "Click or hover any node to inspect how traffic routes through the home cluster.",
+    title: "Home Cluster Network Topology",
+    summary: "Select a stage to see how traffic moves from the edge to storage.",
     nodes: [
       {
         id: "edge-ingress",
         step: "01",
         label: "Cloudflare & Traefik",
         protocol: "TLS 1.3 / SNI",
-        detail: "Terminates public and split-horizon DNS traffic, enforcing strict TLS certificates and routing rules per subdomain."
+        detail:
+          "Terminates TLS for public and internal subdomains and forwards requests to the right container or VM."
       },
       {
         id: "dns-sinkhole",
         step: "02",
         label: "AdGuard Home",
         protocol: "DNS :53 / DoH",
-        detail: "Acts as the primary LAN resolver, scrubbing ad/tracker queries and resolving internal `.local` service records."
+        detail:
+          "Handles LAN DNS resolution, blocks ad and tracker domains, and maps internal service hostnames."
       },
       {
         id: "proxmox-host",
         step: "03",
         label: "Proxmox VE",
         protocol: "KVM / LXC",
-        detail: "Partitions bare-metal CPU and RAM across isolated virtual machines and lightweight Linux containers."
+        detail:
+          "Splits bare-metal CPU and RAM across separate virtual machines and lightweight Linux containers."
       },
       {
         id: "docker-fleet",
         step: "04",
-        label: "Docker + Portainer",
-        protocol: "Bridge Networks",
-        detail: "Runs 20+ isolated service stacks (databases, bots, mail testing, Jellyfin) with health checks and restart policies."
+        label: "Docker & Portainer",
+        protocol: "Bridge Nets",
+        detail:
+          "Hosts 20+ containerized stacks (databases, Telegram bots, mail tests, Jellyfin) with health checks."
       },
       {
         id: "truenas-zfs",
         step: "05",
         label: "TrueNAS ZFS",
-        protocol: "NFS / SMB / ZFS",
-        detail: "Provides redundant ZFS storage pools, scheduled volume snapshots, and off-node backup targets for all stateful services."
+        protocol: "NFS / SMB",
+        detail:
+          "Provides redundant ZFS storage, scheduled snapshots, and backup targets for stateful services."
       }
     ]
   } as ArchitectureFlow,
   skills: {
-    languages: ["Python", "Go", "TypeScript / JavaScript", "SQL", "HTML / CSS"],
-    frameworks: ["FastAPI", "aiogram", "Playwright", "Astro", "Tailwind CSS", "Flask"],
+    languages: ["Python", "Go", "C", "TypeScript / JS", "SQL"],
+    frameworks: ["FastAPI", "React", "ESP-IDF", "aiogram", "Playwright", "Astro", "Tailwind CSS"],
     infrastructure: ["Docker", "PostgreSQL", "Redis", "Postfix / JMAP", "Nginx / Traefik", "Linux / systemd", "Cloudflare"]
   }
 };

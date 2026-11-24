@@ -1,9 +1,10 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
+import Icon from "./Icon.astro";
 import { PROFILE_INFO } from "../../data/projects";
 
 interface Props {
-  currentRoute?: "/" | "/lab" | "/services";
+  currentRoute?: "/" | "/lab" | "/services" | "/404";
 }
 
 const { currentRoute = "/" } = Astro.props;
@@ -12,47 +13,47 @@ const isLab = currentRoute === "/lab" || currentRoute === "/services";
 ---
 
 <header class="sticky top-0 z-50 w-full bg-ed-bg/90 backdrop-blur-md border-b border-ed-border">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2 sm:gap-4">
     <!-- Brand / Identity -->
     <a
       href={import.meta.env.BASE_URL}
-      class="inline-flex items-center gap-2.5 group focus:outline-none"
+      class="inline-flex items-center gap-2.5 rounded-md group shrink-0"
     >
       <span class="font-mono text-sm font-semibold tracking-tight text-ed-text group-hover:text-ed-accent transition-colors">
         @{PROFILE_INFO.handle}
       </span>
-      <span class="text-ed-border-strong font-mono text-xs">/</span>
+      <span class="hidden sm:inline text-ed-border-strong font-mono text-xs">/</span>
       <span class="hidden sm:inline text-xs font-mono text-ed-text-muted">
         {PROFILE_INFO.name}
       </span>
     </a>
 
     <!-- Navigation & Actions -->
-    <div class="flex items-center gap-2 sm:gap-4">
+    <div class="flex items-center gap-1.5 sm:gap-3.5 shrink-0">
       <nav aria-label="Primary navigation" class="flex items-center gap-0.5 rounded-full border border-ed-border bg-ed-surface-subtle p-1">
         <a
           href={import.meta.env.BASE_URL}
           aria-current={isHome ? "page" : undefined}
-          class={`m3-btn-expressive px-3 py-1 rounded-full text-xs font-mono ${
+          class={`m3-btn-expressive px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-full text-xs font-mono leading-none ${
             isHome
               ? "bg-ed-text text-ed-bg font-semibold shadow-2xs"
               : "text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface/80"
           }`}
         >
-          <span class="opacity-60 mr-1">01</span>Index
+          Projects
         </a>
         <a
           href={`${import.meta.env.BASE_URL}lab`}
           aria-current={isLab ? "page" : undefined}
-          class={`m3-btn-expressive px-3 py-1 rounded-full text-xs font-mono inline-flex items-center gap-1.5 ${
+          class={`m3-btn-expressive px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-full text-xs font-mono leading-none inline-flex items-center gap-1.5 ${
             isLab
               ? "bg-ed-text text-ed-bg font-semibold shadow-2xs"
               : "text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface/80"
           }`}
         >
-          <span><span class="opacity-60 mr-1">02</span>Lab</span>
+          <span>Homelab</span>
           <span
-            class={`rounded-full text-[10px] px-1.5 py-px uppercase tracking-wider border ${
+            class={`hidden sm:inline-block rounded-full text-[10px] px-1.5 py-px uppercase tracking-wider border ${
               isLab
                 ? "border-ed-bg/30 text-ed-bg/90"
                 : "border-ed-border bg-ed-surface text-ed-text-muted"
@@ -70,11 +71,11 @@ const isLab = currentRoute === "/lab" || currentRoute === "/services";
           href={PROFILE_INFO.githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="m3-btn-expressive inline-flex items-center justify-center w-8 h-8 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
+          class="m3-btn-expressive inline-flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
           aria-label="GitHub profile"
           title={`GitHub (@${PROFILE_INFO.handle})`}
         >
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <svg aria-hidden="true" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
@@ -85,11 +86,11 @@ const isLab = currentRoute === "/lab" || currentRoute === "/services";
 
         <a
           href={`mailto:${PROFILE_INFO.email}`}
-          class="m3-btn-expressive hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-xs font-mono text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
+          class="m3-btn-expressive hidden sm:inline-flex items-center gap-1 h-8 px-3 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-xs font-mono text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
           title="Send email"
         >
           <span>Email</span>
-          <span class="text-ed-accent">↗</span>
+          <Icon name="arrow-up-right" class="w-3.5 h-3.5 text-ed-accent" />
         </a>
 
         <ThemeToggle />

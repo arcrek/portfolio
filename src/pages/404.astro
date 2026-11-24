@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/editorial/Icon.astro";
+import { PROFILE_INFO } from "../data/projects";
+---
+
+<Layout
+  currentRoute="/404"
+  canonicalPath={null}
+  title={`Page Not Found — ${PROFILE_INFO.name}`}
+  description="The page you requested could not be found."
+  noindex={true}
+>
+  <section class="max-w-xl mx-auto my-12">
+    <div class="rounded-3xl border border-ed-border bg-ed-surface p-8 space-y-4">
+      <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
+        404
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ed-text">
+        Page not found.
+      </h1>
+      <p class="text-sm text-ed-text-secondary leading-relaxed">
+        The link you followed does not exist here. You can head back to the project index or check out the homelab page.
+      </p>
+      <div class="flex flex-wrap items-center gap-2.5 pt-2">
+        <a
+          href={import.meta.env.BASE_URL}
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 bg-ed-text text-ed-bg font-mono text-xs font-semibold hover:opacity-90"
+        >
+          <Icon name="arrow-left" class="w-3.5 h-3.5" />
+          <span>Back to Projects</span>
+        </a>
+        <a
+          href={`${import.meta.env.BASE_URL}lab`}
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70"
+        >
+          <span>Homelab</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
