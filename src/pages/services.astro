@@ -1,6 +1,6 @@
 ---
-// Alias route for backward compatibility: renders the new Homelab & Journey page
+// Backward-compatible alias route; canonical points to "/lab"
 import LabPage from "./lab.astro";
 ---
 
-<LabPage />
+<LabPage canonicalPath="/lab" noindex={true} />

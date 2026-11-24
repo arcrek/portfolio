@@ -1,6 +1,7 @@
 ---
 import type { ProjectItem } from "../../data/projects";
 import type { GitHubRepoMeta } from "../../lib/github";
+import Icon from "./Icon.astro";
 
 interface Props {
   project: ProjectItem;
@@ -10,22 +11,25 @@ interface Props {
 const { project, ghMeta } = Astro.props;
 const primaryLang = ghMeta?.language ?? project.techStack[0] ?? "Python";
 const isClosedSource = project.sourceVisibility === "closed" || !project.githubUrl;
+const secondaryTech = project.techStack
+  .filter((tech) => tech.toLowerCase() !== primaryLang.toLowerCase())
+  .slice(0, 2);
 ---
 
 <details
   id={project.id}
   class="ed-project-row group border-b border-ed-border last:border-b-0 bg-ed-surface transition-colors"
 >
-  <summary class="px-4 sm:px-5 py-3.5 cursor-pointer select-none hover:bg-ed-surface-subtle/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
-    <!-- Left: Index + Title + 1-line summary -->
+  <summary class="px-4 sm:px-5 py-3.5 cursor-pointer select-none hover:bg-ed-surface-subtle/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-2.5 md:gap-4">
+    <!-- Left: Chevron + Index + Title + 1-line summary -->
     <div class="flex items-center gap-3 min-w-0 flex-1">
-      <span class="ed-row-chevron inline-flex items-center justify-center w-5 h-5 rounded-full border border-ed-border bg-ed-surface-subtle font-mono text-xs text-ed-text-muted transition-all duration-200 shrink-0">
-        ▸
+      <span class="ed-row-chevron inline-flex items-center justify-center w-6 h-6 rounded-full border border-ed-border bg-ed-surface-subtle text-ed-text-muted transition-all duration-200 shrink-0">
+        <Icon name="chevron-right" class="w-3.5 h-3.5" />
       </span>
       <span class="font-mono text-xs text-ed-text-muted shrink-0">
         {project.index}
       </span>
-      <div class="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+      <div class="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3">
         <span class="font-mono text-sm font-bold text-ed-text group-hover:text-ed-accent transition-colors shrink-0">
           {project.title}
         </span>
@@ -35,32 +39,30 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
       </div>
     </div>
 
-    <!-- Right: Category + Stack Pills + Language -->
-    <div class="flex items-center gap-2 pl-8 md:pl-0 shrink-0">
-      <span class="hidden lg:inline-block font-mono text-[11px] text-ed-text-muted">
+    <!-- Right: Category + Deduplicated Stack Pills + Language -->
+    <div class="flex flex-wrap items-center gap-1.5 pl-9 md:pl-0 shrink-0">
+      <span class="hidden lg:inline-block font-mono text-[11px] text-ed-text-muted mr-1">
         {project.category}
       </span>
 
-      <div class="flex items-center gap-1.5">
-        {project.techStack.slice(0, 3).map((tech) => (
-          <span class="rounded-md font-mono text-[10px] px-2 py-0.5 border border-ed-border bg-ed-surface-subtle/60 text-ed-text-secondary">
-            {tech}
-          </span>
-        ))}
-      </div>
+      {secondaryTech.map((tech) => (
+        <span class="rounded-md font-mono text-[11px] px-2 py-0.5 border border-ed-border bg-ed-surface-subtle/60 text-ed-text-secondary whitespace-nowrap">
+          {tech}
+        </span>
+      ))}
 
-      <span class="rounded-full font-mono text-[10px] px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-medium">
+      <span class="rounded-full font-mono text-[11px] px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-medium whitespace-nowrap">
         {primaryLang}
       </span>
     </div>
   </summary>
 
-  <!-- Expanded Technical Notes -->
+  <!-- Expanded Notes -->
   <div class="ed-row-body px-4 sm:px-5 pb-5 pt-2 bg-ed-surface-subtle/40 border-t border-ed-border">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
       <div class="space-y-1">
-        <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
-          Problem & Motivation
+        <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+          Why I built it
         </div>
         <p class="text-xs text-ed-text-secondary leading-relaxed">
           {project.whyIBuiltThis}
@@ -68,8 +70,8 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
       </div>
 
       <div class="space-y-1">
-        <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
-          System Mechanics
+        <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+          How it works
         </div>
         <p class="text-xs text-ed-text-secondary leading-relaxed">
           {project.howItWorks}
@@ -77,8 +79,8 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
       </div>
 
       <div class="space-y-1.5">
-        <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-accent">
-          Engineering Highlights
+        <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-accent">
+          Key details
         </div>
         <ul class="space-y-1">
           {project.keyHighlights.map((highlight) => (
@@ -106,19 +108,7 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
           title="Closed source — repository not public"
           class="rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-secondary font-mono text-xs font-medium select-none"
         >
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="w-3 h-3 shrink-0"
-          >
-            <rect x="3" y="7" width="10" height="7" rx="1.5" />
-            <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
-          </svg>
+          <Icon name="lock" class="w-3 h-3" />
           <span>Closed Source<span class="sr-only"> — repository not public</span></span>
         </span>
       ) : (
@@ -126,17 +116,17 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
           href={project.githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-text bg-ed-text text-ed-bg font-mono text-xs font-medium hover:opacity-90"
+          class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-ed-text bg-ed-text text-ed-bg font-mono text-xs font-medium hover:opacity-90"
         >
-          <span>Inspect {project.repoSlug ?? project.title}</span>
-          <span>↗</span>
+          <span>View {project.repoSlug ?? project.title}</span>
+          <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
         </a>
       )}
     </div>
   </div>
 </details>
 
-<script is:inline>
+<script>
   function syncHashProjectRow() {
     if (!window.location.hash) return;
     const targetId = window.location.hash.slice(1);
@@ -147,10 +137,7 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
     }
   }
 
-  if (!window.__edProjectRowBound) {
-    window.__edProjectRowBound = true;
-    syncHashProjectRow();
-    window.addEventListener("hashchange", syncHashProjectRow);
-    document.addEventListener("astro:page-load", syncHashProjectRow);
-  }
+  syncHashProjectRow();
+  window.addEventListener("hashchange", syncHashProjectRow);
+  document.addEventListener("astro:page-load", syncHashProjectRow);
 </script>

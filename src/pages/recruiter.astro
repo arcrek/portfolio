@@ -1,6 +1,6 @@
 ---
-// Dedicated deep-linkable alias route for resumes and recruiter outreach
+// Alias route for resumes and recruiter links; canonical points to "/"
 import IndexPage from "./index.astro";
 ---
 
-<IndexPage />
+<IndexPage canonicalPath="/" noindex={true} />

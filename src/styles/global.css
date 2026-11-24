@@ -27,7 +27,7 @@
 
 @font-face {
   font-family: "JetBrains Mono Fallback";
-  src: local("DejaVu Sans Mono"), local("Courier New"), local("monospace");
+  src: local("DejaVu Sans Mono"), local("Courier New"), local("Liberation Mono");
   size-adjust: 100%;
   ascent-override: 100%;
   descent-override: 26%;
@@ -43,17 +43,18 @@
 
   --ed-text: #090d16;
   --ed-text-secondary: #334155;
-  --ed-text-muted: #64748b;
+  --ed-text-muted: #475569;
 
   --ed-border: #e2e8f0;
   --ed-border-strong: #cbd5e1;
 
-  --ed-accent: #0284c7;
-  --ed-accent-soft: rgba(2, 132, 199, 0.1);
-  --ed-accent-border: rgba(2, 132, 199, 0.35);
+  --ed-accent: #0369a1;
+  --ed-accent-soft: rgba(3, 105, 161, 0.1);
+  --ed-accent-surface: #edf6fc;
+  --ed-accent-border: rgba(3, 105, 161, 0.35);
 
-  --ed-status: #059669;
-  --ed-status-soft: rgba(5, 150, 105, 0.12);
+  --ed-status: #047857;
+  --ed-status-soft: rgba(4, 120, 87, 0.12);
 
   --m3-ease-spring: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -66,14 +67,15 @@ html.dark {
   --ed-surface-muted: #1e293b;
 
   --ed-text: #f1f5f9;
-  --ed-text-secondary: #94a3b8;
-  --ed-text-muted: #64748b;
+  --ed-text-secondary: #cbd5e1;
+  --ed-text-muted: #8b9bb4;
 
   --ed-border: #1e293b;
   --ed-border-strong: #334155;
 
   --ed-accent: #38bdf8;
   --ed-accent-soft: rgba(56, 189, 248, 0.12);
+  --ed-accent-surface: #13253b;
   --ed-accent-border: rgba(56, 189, 248, 0.42);
 
   --ed-status: #34d399;
@@ -95,6 +97,7 @@ html.dark {
 
   --color-ed-accent: var(--ed-accent);
   --color-ed-accent-soft: var(--ed-accent-soft);
+  --color-ed-accent-surface: var(--ed-accent-surface);
   --color-ed-accent-border: var(--ed-accent-border);
 
   --color-ed-status: var(--ed-status);
@@ -118,6 +121,14 @@ body {
   transition: background-color 0.24s var(--m3-ease-spring), color 0.24s var(--m3-ease-spring);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessible focus ring for interactive controls */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--ed-accent);
+  outline-offset: 2px;
 }
 
 /* Material 3 Expressive Pill Button (morphs pill -> squircle on active press) */
@@ -185,6 +196,21 @@ details.ed-project-row[open] .ed-row-chevron {
 
 details.ed-project-row[open] .ed-row-body {
   animation: ed-expand-fade 0.24s var(--m3-ease-spring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .ed-flow-line,
+  details.ed-project-row[open] .ed-row-body {
+    animation: none;
+  }
+
+  .m3-btn-expressive:active {
+    transform: none;
+  }
 }
 
 /* Custom Scrollbar */

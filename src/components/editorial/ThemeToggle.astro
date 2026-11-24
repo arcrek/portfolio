@@ -9,13 +9,14 @@ const { class: className = "" } = Astro.props;
 <button
   id="theme-toggle"
   type="button"
-  class={`m3-btn-expressive inline-flex items-center justify-center w-8 h-8 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong cursor-pointer select-none ${className}`}
+  class={`m3-btn-expressive inline-flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-full border border-ed-border bg-ed-surface-subtle/70 text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-muted/70 hover:border-ed-border-strong cursor-pointer select-none ${className}`}
   aria-label="Toggle color theme"
   title="Toggle dark / light theme"
 >
   <!-- Sun Icon (shown in dark mode) -->
   <svg
     id="theme-toggle-light-icon"
+    aria-hidden="true"
     class="w-4 h-4 hidden"
     fill="none"
     viewBox="0 0 24 24"
@@ -31,6 +32,7 @@ const { class: className = "" } = Astro.props;
   <!-- Moon Icon (shown in light mode) -->
   <svg
     id="theme-toggle-dark-icon"
+    aria-hidden="true"
     class="w-4 h-4 hidden"
     fill="none"
     viewBox="0 0 24 24"
@@ -68,12 +70,16 @@ const { class: className = "" } = Astro.props;
         const currentlyDark = document.documentElement.classList.contains("dark");
         if (currentlyDark) {
           document.documentElement.classList.remove("dark");
-          localStorage.setItem("ed-theme", "light");
+          try {
+            localStorage.setItem("ed-theme", "light");
+          } catch {}
           lightIcon.classList.add("hidden");
           darkIcon.classList.remove("hidden");
         } else {
           document.documentElement.classList.add("dark");
-          localStorage.setItem("ed-theme", "dark");
+          try {
+            localStorage.setItem("ed-theme", "dark");
+          } catch {}
           darkIcon.classList.add("hidden");
           lightIcon.classList.remove("hidden");
         }
@@ -82,5 +88,9 @@ const { class: className = "" } = Astro.props;
   }
 
   syncThemeToggle();
-  document.addEventListener("astro:page-load", syncThemeToggle);
+  if (!window.__edThemeToggleBound) {
+    window.__edThemeToggleBound = true;
+    document.addEventListener("astro:after-swap", syncThemeToggle);
+    document.addEventListener("astro:page-load", syncThemeToggle);
+  }
 </script>

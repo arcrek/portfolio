@@ -2,6 +2,7 @@
 import type { ProjectItem } from "../../data/projects";
 import type { GitHubRepoMeta } from "../../lib/github";
 import ArchitectureDiagram from "./ArchitectureDiagram.astro";
+import Icon from "./Icon.astro";
 
 interface Props {
   project: ProjectItem;
@@ -18,45 +19,41 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
   id={project.id}
   class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface transition-colors hover:border-ed-border-strong"
 >
-  <!-- Top Metadata & Title Bar -->
-  <div class="p-5 sm:p-6 border-b border-ed-border flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-    <div class="space-y-2 max-w-2xl">
-      <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-        <span class="rounded-full px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-semibold">
-          FLAGSHIP {project.index}
-        </span>
-        <span class="text-ed-text-muted">//</span>
-        <span class="text-ed-text-secondary font-medium">
-          {project.category}
-        </span>
-        {isInDevelopment && (
-          <span class="rounded-full inline-flex items-center gap-1.5 px-2.5 py-0.5 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-secondary font-semibold">
-            <span class="w-1.5 h-1.5 rounded-full bg-ed-status animate-pulse"></span>
-            <span>In Development</span>
+  <!-- Top Metadata, Title & Actions -->
+  <div class="p-5 sm:p-6 border-b border-ed-border space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div class="space-y-2 min-w-0 max-w-2xl">
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <span class="rounded-full px-2.5 py-0.5 bg-ed-accent-soft text-ed-accent border border-ed-accent-border font-semibold">
+            FLAGSHIP {project.index}
           </span>
-        )}
-        {!isClosedSource && project.repoSlug && (
-          <>
-            <span class="text-ed-text-muted hidden sm:inline">&bull;</span>
-            <span class="text-ed-text-muted hidden sm:inline">
-              {project.repoSlug}
+          <span class="text-ed-text-secondary font-medium">
+            {project.category}
+          </span>
+          {isInDevelopment && (
+            <span class="rounded-full inline-flex items-center gap-1.5 px-2.5 py-0.5 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-secondary font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-ed-status"></span>
+              <span>In Development</span>
             </span>
-          </>
-        )}
+          )}
+          {!isClosedSource && project.repoSlug && (
+            <span class="text-ed-text-muted hidden sm:inline">
+              &middot; {project.repoSlug}
+            </span>
+          )}
+        </div>
+
+        <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ed-text">
+          {project.title}
+        </h3>
+
+        <p class="text-sm text-ed-text-secondary leading-relaxed">
+          {project.tagline}
+        </p>
       </div>
 
-      <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-ed-text">
-        {project.title}
-      </h3>
-
-      <p class="text-sm text-ed-text-secondary leading-relaxed">
-        {project.tagline}
-      </p>
-    </div>
-
-    <!-- Stack Pills & Repository Action -->
-    <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3 shrink-0">
-      <div class="flex items-center gap-2">
+      <!-- Primary Language & Repository Action -->
+      <div class="flex items-center gap-2 shrink-0">
         <span class="rounded-full inline-flex items-center gap-1.5 px-2.5 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-[11px] text-ed-text-secondary">
           <span class="w-1.5 h-1.5 rounded-full bg-ed-accent"></span>
           <span>{primaryLang}</span>
@@ -67,19 +64,7 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
             title="Closed source — repository not public"
             class="rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-border-strong bg-ed-surface-subtle text-ed-text-secondary font-mono text-xs font-medium select-none"
           >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="w-3 h-3 shrink-0"
-            >
-              <rect x="3" y="7" width="10" height="7" rx="1.5" />
-              <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
-            </svg>
+            <Icon name="lock" class="w-3 h-3" />
             <span>Closed Source<span class="sr-only"> — repository not public</span></span>
           </span>
         ) : (
@@ -87,21 +72,22 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
             href={project.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-3.5 py-1 border border-ed-text bg-ed-text text-ed-bg font-mono text-xs font-medium hover:opacity-90"
+            class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-ed-text bg-ed-text text-ed-bg font-mono text-xs font-medium hover:opacity-90"
           >
             <span>View Source</span>
-            <span>↗</span>
+            <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
           </a>
         )}
       </div>
+    </div>
 
-      <div class="flex flex-wrap lg:justify-end gap-1.5">
-        {project.techStack.map((tech) => (
-          <span class="rounded-lg font-mono text-[11px] px-2 py-0.5 border border-ed-border bg-ed-surface-subtle/60 text-ed-text-secondary">
-            {tech}
-          </span>
-        ))}
-      </div>
+    <!-- Full-Width Tech Stack Strip (never crushes header title) -->
+    <div class="flex flex-wrap gap-1.5">
+      {project.techStack.map((tech) => (
+        <span class="rounded-lg font-mono text-[11px] px-2.5 py-0.5 border border-ed-border bg-ed-surface-subtle/60 text-ed-text-secondary">
+          {tech}
+        </span>
+      ))}
     </div>
   </div>
 
@@ -117,30 +103,27 @@ const isClosedSource = project.sourceVisibility === "closed" || !project.githubU
 
   <!-- Editorial 3-Column Breakdown -->
   <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-ed-border">
-    <!-- Column 1: Why I Built This -->
     <div class="p-5 sm:p-6 space-y-2">
       <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
-        01 // Problem & Motivation
+        Why I built it
       </h4>
       <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
         {project.whyIBuiltThis}
       </p>
     </div>
 
-    <!-- Column 2: How It Works -->
     <div class="p-5 sm:p-6 space-y-2">
       <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
-        02 // System Mechanics
+        How it works
       </h4>
       <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
         {project.howItWorks}
       </p>
     </div>
 
-    <!-- Column 3: Technical Highlights -->
     <div class="p-5 sm:p-6 space-y-2 bg-ed-surface-subtle/30">
       <h4 class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-accent">
-        03 // Engineering Highlights
+        Key details
       </h4>
       <ul class="space-y-1.5">
         {project.keyHighlights.map((highlight) => (

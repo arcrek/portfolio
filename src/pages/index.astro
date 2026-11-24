@@ -2,10 +2,18 @@
 import Layout from "../layouts/Layout.astro";
 import FlagshipCard from "../components/editorial/FlagshipCard.astro";
 import ProjectRow from "../components/editorial/ProjectRow.astro";
+import Icon from "../components/editorial/Icon.astro";
 import { CURATED_PROJECTS, PROFILE_INFO } from "../data/projects";
 import { fetchAllCuratedRepos } from "../lib/github";
 
-// Build-time GitHub data hydration
+interface Props {
+  canonicalPath?: string;
+  noindex?: boolean;
+}
+
+const { canonicalPath = "/", noindex = false } = Astro.props;
+
+// Build-time GitHub metadata lookup (falls back cleanly offline)
 const repoSlugs = CURATED_PROJECTS.map((p) => p.repoSlug).filter(
   (slug): slug is string => Boolean(slug)
 );
@@ -15,19 +23,16 @@ const flagshipProjects = CURATED_PROJECTS.filter((p) => p.tier === "flagship");
 const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
 ---
 
-<Layout currentRoute="/">
-  <!-- 01 // EDITORIAL MASTHEAD & INTEGRATED STACK STRIP -->
+<Layout currentRoute="/" canonicalPath={canonicalPath} noindex={noindex}>
+  <!-- Hero & Technical Stack -->
   <section aria-labelledby="masthead-heading" class="mb-12">
     <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface">
-      <!-- Top Row: Identity & Profile Telemetry -->
       <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-ed-border">
-        <!-- Main Narrative (8 cols) -->
+        <!-- Main Introduction (8 cols) -->
         <div class="lg:col-span-8 p-6 sm:p-8 flex flex-col justify-between space-y-6">
           <div class="space-y-4">
             <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 border border-ed-border bg-ed-surface-subtle font-mono text-xs text-ed-text-secondary">
-              <span class="w-2 h-2 rounded-full bg-ed-status animate-pulse"></span>
-              <span>01 // IDENTITY</span>
-              <span class="text-ed-border-strong">&bull;</span>
+              <span class="w-2 h-2 rounded-full bg-ed-status shrink-0"></span>
               <span>{PROFILE_INFO.stats.status}</span>
             </div>
 
@@ -42,22 +47,22 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
             </h1>
 
             <p class="text-base sm:text-lg text-ed-text-secondary leading-relaxed max-w-2xl">
-              {PROFILE_INFO.tagline} If a workflow can be containerized, piped over sockets, or scripted headless, I have probably stayed up until 3 a.m. making it run in production.
+              {PROFILE_INFO.tagline}
             </p>
           </div>
 
           <!-- Primary Actions -->
-          <div class="flex flex-wrap items-center gap-2.5 pt-2">
+          <div class="flex flex-wrap items-center gap-2.5 pt-1">
             <a
-              href="#flagship-systems"
+              href="#featured-projects"
               class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 bg-ed-text text-ed-bg font-mono text-xs font-semibold hover:opacity-90"
             >
-              <span>Inspect Flagship Systems</span>
-              <span>↓</span>
+              <span>Featured Projects</span>
+              <Icon name="arrow-down" class="w-3.5 h-3.5" />
             </a>
 
             <a
-              href="#engineering-index"
+              href="#more-projects"
               class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
             >
               <span>All Projects ({CURATED_PROJECTS.length})</span>
@@ -70,14 +75,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
               class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle hover:border-ed-border-strong font-mono text-xs"
             >
               <span>GitHub ({PROFILE_INFO.stats.publicRepos} repos)</span>
-              <span>↗</span>
-            </a>
-
-            <a
-              href={`mailto:${PROFILE_INFO.email}`}
-              class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle hover:border-ed-border-strong font-mono text-xs"
-            >
-              <span>{PROFILE_INFO.email}</span>
+              <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
@@ -87,7 +85,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
           <div class="flex items-center gap-4">
             <div class="relative w-20 h-20 rounded-2xl border border-ed-border-strong bg-ed-surface shrink-0 overflow-hidden">
               <img
-                src={`${import.meta.env.BASE_URL}img.jpg`}
+                src={`${import.meta.env.BASE_URL}avatar.webp`}
                 alt={PROFILE_INFO.name}
                 width="80"
                 height="80"
@@ -97,10 +95,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
               />
             </div>
             <div class="space-y-1 min-w-0">
-              <div class="font-mono text-xs font-bold uppercase tracking-wider text-ed-accent">
-                Builder Telemetry
-              </div>
-              <div class="font-bold text-sm text-ed-text truncate">
+              <div class="font-bold text-sm text-ed-text leading-snug">
                 {PROFILE_INFO.title}
               </div>
               <div class="font-mono text-xs text-ed-text-muted">
@@ -123,22 +118,21 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
                 Backend
               </div>
               <div class="font-mono text-[10px] uppercase tracking-wider text-ed-text-muted">
-                Primary Focus
+                Main Focus
               </div>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-ed-border flex items-center justify-between font-mono text-[11px] text-ed-text-muted">
-            <span>"{PROFILE_INFO.stats.motto}"</span>
-            <span class="text-ed-status font-semibold">● ONLINE</span>
+          <div class="pt-3 border-t border-ed-border font-mono text-[11px] text-ed-text-muted">
+            "{PROFILE_INFO.stats.motto}"
           </div>
         </div>
       </div>
 
-      <!-- Bottom Row: Integrated Technical Stack Strip -->
+      <!-- Technical Stack Strip -->
       <div class="border-t border-ed-border grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-ed-border bg-ed-surface">
         <div class="p-4 sm:px-6 space-y-2">
-          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
+          <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
             Languages
           </div>
           <div class="flex flex-wrap gap-1.5">
@@ -151,8 +145,8 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
         </div>
 
         <div class="p-4 sm:px-6 space-y-2">
-          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
-            Frameworks & Runtime
+          <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+            Frameworks & Tools
           </div>
           <div class="flex flex-wrap gap-1.5">
             {PROFILE_INFO.skills.frameworks.map((fw) => (
@@ -164,8 +158,8 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
         </div>
 
         <div class="p-4 sm:px-6 space-y-2">
-          <div class="font-mono text-[10px] font-semibold uppercase tracking-wider text-ed-text-muted">
-            Infrastructure & Protocols
+          <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-ed-text-muted">
+            Infrastructure
           </div>
           <div class="flex flex-wrap gap-1.5">
             {PROFILE_INFO.skills.infrastructure.map((infra) => (
@@ -179,21 +173,15 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
     </div>
   </section>
 
-  <!-- 02 // FLAGSHIP PRODUCTION SYSTEMS -->
-  <section id="flagship-systems" class="mb-14 scroll-mt-20">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 pb-3 border-b border-ed-border">
-      <div>
-        <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-          02 // Flagship Production Systems
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ed-text mt-1">
-          Core Architecture & Builds
-        </h2>
+  <!-- Featured Projects -->
+  <section id="featured-projects" class="mb-14 scroll-mt-20">
+    <div class="mb-5 pb-3 border-b border-ed-border">
+      <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
+        Selected Work
       </div>
-      <div class="flex items-center gap-2 font-mono text-xs text-ed-text-muted">
-        <span class="w-2 h-2 rounded-full bg-ed-status"></span>
-        <span>Interactive SVG Pipeline &bull; Live GitHub Hydration</span>
-      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ed-text mt-1">
+        Featured Projects
+      </h2>
     </div>
 
     <div class="space-y-8">
@@ -206,18 +194,18 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
     </div>
   </section>
 
-  <!-- 03 // EXPANDABLE ENGINEERING INDEX -->
-  <section id="engineering-index" class="mb-14 scroll-mt-20">
+  <!-- More Projects -->
+  <section id="more-projects" class="mb-14 scroll-mt-20">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4">
       <div>
         <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-          03 // Engineering Index
+          More Projects
         </div>
         <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight text-ed-text mt-1">
-          Additional Systems, Daemons & Tooling
+          Tools, Bots & Smaller Builds
         </h2>
         <p class="text-xs sm:text-sm text-ed-text-secondary mt-0.5">
-          Click any row to expand problem context, system mechanics, and technical highlights inline.
+          Expand any row for context, stack details, and the repository link.
         </p>
       </div>
 
@@ -228,7 +216,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
         class="inline-flex items-center gap-1.5 font-mono text-xs text-ed-accent hover:underline shrink-0"
       >
         <span>Browse all {PROFILE_INFO.stats.publicRepos} repositories on GitHub</span>
-        <span>↗</span>
+        <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
       </a>
     </div>
 
@@ -242,18 +230,18 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
     </div>
   </section>
 
-  <!-- 04 // DIRECT CONTACT STRIP -->
+  <!-- Contact -->
   <section aria-labelledby="contact-heading">
     <div class="rounded-3xl overflow-hidden shadow-xs border border-ed-border bg-ed-surface p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
       <div class="space-y-1.5 max-w-xl">
         <div class="font-mono text-xs font-semibold uppercase tracking-wider text-ed-accent">
-          04 // Dispatch & Contact
+          Contact
         </div>
         <h2 id="contact-heading" class="text-xl sm:text-2xl font-bold text-ed-text">
-          Open to software engineering internships and backend systems work.
+          Open to software engineering internships and backend work.
         </h2>
         <p class="text-xs sm:text-sm text-ed-text-secondary leading-relaxed">
-          Have a question about one of my repositories, or looking for an ICT student who ships real backend infrastructure? Reach out directly via email or GitHub.
+          Questions about a repository, or looking for an ICT student who enjoys building practical backend software? Email or GitHub is the fastest way to reach me.
         </p>
       </div>
 
@@ -263,7 +251,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
           class="m3-btn-expressive rounded-full inline-flex items-center gap-2 px-4 py-2 bg-ed-text text-ed-bg font-mono text-xs font-semibold hover:opacity-90"
         >
           <span>Send Email</span>
-          <span>↗</span>
+          <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
         </a>
 
         <a
@@ -273,7 +261,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
           class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface-subtle text-ed-text font-mono text-xs font-medium hover:bg-ed-surface-muted/70 hover:border-ed-border-strong"
         >
           <span>GitHub (@{PROFILE_INFO.handle})</span>
-          <span>↗</span>
+          <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
         </a>
 
         <a
@@ -283,7 +271,7 @@ const indexProjects = CURATED_PROJECTS.filter((p) => p.tier === "index");
           class="m3-btn-expressive rounded-full inline-flex items-center gap-1.5 px-4 py-2 border border-ed-border bg-ed-surface text-ed-text-secondary hover:text-ed-text hover:bg-ed-surface-subtle font-mono text-xs"
         >
           <span>Facebook</span>
-          <span>↗</span>
+          <Icon name="arrow-up-right" class="w-3.5 h-3.5" />
         </a>
       </div>
     </div>
